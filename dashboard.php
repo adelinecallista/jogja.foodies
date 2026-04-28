@@ -18,7 +18,7 @@
     <p>Selamat datang, <?php echo $_SESSION['admin']; ?>!</p>
 
 <ul>
-    <li><a href="tambah.php">Tambah Makanan</a></li>
+    <li><a href="tambah_menu.php">Tambah List Rekomendasi</a></li>
     <li><a href="list.php">Lihat & Edit Daftar Makanan</a></li>
     <li><a href="logout.php">Logout</a></li>
 </ul>
