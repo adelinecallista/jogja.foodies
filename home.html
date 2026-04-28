@@ -1,16 +1,322 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogja.Foodies - Home</title>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav>
-        <ul>
-            <li><a href="home.html">Home</a></li>
-            <li><a href="menu.html">Menu</a></li>
+
+<!-- NAVBAR mirip TIX.ID -->
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">JOGJA.<span>FOODIES</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" href="home.html">HOME</a></li>
+        <li class="nav-item"><a class="nav-link" href="menu.html">MENU</a></li>
+        <li class="nav-item"><a class="nav-link" href="login.html">LOGIN</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<div class="hero-section">
+  <div class="container">
+    <div class="hero-content text-center">
+      <h1 class="hero-title">Jogja.<span>Foodies</span></h1>
+      <p class="hero-subtitle">Feel the culinary, live the experience!</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDER SECTION - SEDANG TAYANG (mirip tix.id) -->
+<div class="slider-section">
+  <div class="container">
+    <div class="section-header d-flex justify-content-between align-items-center mb-3">
+      <h2 class="section-title">SEDANG <span>POPULER</span></h2>
+      <a href="#" class="view-all">LIHAT SEMUA <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <p class="slider-subtitle">FROM THE STREET OF JOGJA, TO YOUR PLATE</p>
+    <p class="slider-subtitle2">AND THE TASTE OF <span>AUTHENTIC INDONESIA</span></p>
+
+    <!-- CAROUSEL SLIDER -->
+    <div class="carousel-container">
+      <div class="carousel-slide" id="foodSlider">
+        <!-- slides akan diisi JavaScript otomatis -->
+      </div>
+      <button class="carousel-btn prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+      <button class="carousel-btn next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </div>
+</div>
+
+<!-- DESKRIPSI / QUOTE SECTION (mirip tix.id) -->
+<div class="quote-section">
+  <div class="container text-center">
+    <p class="quote-text">ENJOY THE BEST FOOD AND CULINARY EXPERIENCE IN JOGJA, KEEP UP TO DATE WITH THE LATEST MENU,</p>
+    <p class="quote-text">AND GET ATTRACTIVE DEALS AND PROMOS!</p>
+    <div class="app-buttons-center mt-4">
+    </div>
+  </div>
+</div>
+
+<!-- PARTNERS SECTION -->
+<div class="partners-section">
+  <div class="container">
+    <p class="partners-title">OUR PARTNERS</p>
+    <div class="partners-logos">
+      <span>GUDEG</span>
+      <span>SATE</span>
+      <span>BAKPIA</span>
+      <span>ANGKRINGAN</span>
+      <span>MIE LETHEK</span>
+      <span>KOPI JOSS</span>
+      <span>WEDANG RONDE</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER (mirip tix.id) -->
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5">
+        <h4>JOGJA.<span>FOODIES</span></h4>
+        <p>Best App For Culinary Lovers In Jogja! Discover The Best Traditional And Modern Foods From The City Of Gudeg.</p>
+        <div class="app-buttons mt-2">
+          <!-- <span>App Store</span>
+          <span>Play Store</span>
+          <span>App Gallery</span> -->
+        </div>
+      </div>
+      <div class="col-md-2">
+        <ul class="list-unstyled">
+          <li><a href="home.html">HOME</a></li>
+          <li><a href="menu.html">MENU</a></li>
         </ul>
-    </nav>
+      </div>
+      <div class="col-md-2">
+        <h6>LAINNYA</h6>
+        <ul class="list-unstyled">
+          <li><a href="#">CONTACT US</a></li>
+          <li><a href="#">PRIVACY POLICY</a></li>
+          <li><a href="#">TERMS & CONDITIONS</a></li>
+        </ul>
+      </div>
+      <div class="col-md-3">
+        <h6>FOLLOW US</h6>
+        <div class="social-icons">
+          <i class="fab fa-facebook-f"></i>
+          <i class="fab fa-twitter"></i>
+          <i class="fab fa-instagram"></i>
+          <i class="fab fa-tiktok"></i>
+        </div>
+        <h6 class="mt-3">SUPPORT</h6>
+        <p class="small">E-MAIL: jogjafoodies@gmail.com</p>
+        <p class="small">TEL: (0274) 1234567</p>
+      </div>
+    </div>
+    <hr class="mt-4">
+    <p class="text-center small copyright">© 2025 Jogja.Foodies</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ========== DATA SLIDER (SEDANG POPULER) ==========
+  // Lo bisa ganti foto dan data makanan di sini sesuka hati!
+  const sliderFoods = [
+    {
+      id: 1,
+      name: "Gudeg Mbok Darmi",
+      chef: "Mbok Darmi",
+      rating: 5,
+      image: "https://asset.kompas.com/crops/6d2z0HTdykMY2OVS_el9R0XmI8Q=/0x0:1000x667/750x500/data/photo/2020/08/03/5f27b5c56c51c.jpg",
+      desc: "Dari dapur tradisional ke hati kamu",
+      location: "Kota Gede"
+    },
+    {
+      id: 2,
+      name: "Sate Klathak",
+      chef: "Pak Sahman",
+      rating: 5,
+      image: "https://cdn.idntimes.com/content-images/post/20220124/sate-klathak-famous-dac6c898592d5100a05fe10d73d985c1.jpg",
+      desc: "Daging empuk dengan bumbu rempah khas",
+      location: "Bantul"
+    },
+    {
+      id: 3,
+      name: "Bakpia Pathok",
+      chef: "Keluarga Pathok",
+      rating: 4,
+      image: "https://www.masakapahariini.com/wp-content/uploads/2022/03/bakpia-pathok-750x500.jpg",
+      desc: "Oleh-oleh legendaris Jogja",
+      location: "Pathuk"
+    },
+    {
+      id: 4,
+      name: "Mie Lethek",
+      chef: "Mbah Kromo",
+      rating: 4,
+      image: "https://cdn0-production-images-kly.akamaized.net/d66GQpOkbJh69pY2Klyo4hk9x6U=/1200x675/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3199005/original/096550200_1596177583-shutterstock_334997934.jpg",
+      desc: "Mie hitam khas Imogiri",
+      location: "Imogiri"
+    },
+    {
+      id: 5,
+      name: "Angkringan Lik Man",
+      chef: "Lik Man",
+      rating: 5,
+      image: "https://cdn0-production-images-kly.akamaized.net/-sC20JUaSmOoi5XqHj5qObdrslI=/1200x675/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/2983090/original/011460800_1575629643-angkringan.jpg",
+      desc: "Nasi kucing, sate usus, wedang jahe",
+      location: "Malioboro"
+    },
+    {
+      id: 6,
+      name: "Kopi Joss",
+      chef: "Mang Ujang",
+      rating: 4,
+      image: "https://cdn.idntimes.com/content-images/post/20181023/kopi-joss-4e9cba5456702d73b303f80e4511e48b.jpg",
+      desc: "Kopi dengan arang, khas Malioboro",
+      location: "Malioboro"
+    }
+  ];
+
+  // ========== FUNGSI BINTANG RATING ==========
+  function renderStars(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+      if (i <= rating) {
+        stars += '<i class="fas fa-star"></i>';
+      } else {
+        stars += '<i class="far fa-star"></i>';
+      }
+    }
+    return stars;
+  }
+
+  // ========== SLIDER LOGIC ==========
+  let currentSlide = 0;
+
+  function renderSlider() {
+    const container = document.getElementById('foodSlider');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    sliderFoods.forEach((food, index) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide';
+      if (index === currentSlide) slide.classList.add('active');
+      slide.innerHTML = `
+        <img src="${food.image}" alt="${food.name}" onerror="this.src='https://placehold.co/1200x500/1a1a1a/ff5e00?text=Jogja+Food'">
+        <div class="slide-overlay">
+          <div class="slide-content">
+            <div class="slide-category">FROM THE STREET OF JOGJA</div>
+            <div class="slide-title">${escapeHtml(food.name)}</div>
+            <div class="slide-subtitle">FROM THE CHEF OF <span>${escapeHtml(food.chef)}</span></div>
+            <div class="slide-location"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(food.location)}</div>
+            <div class="slide-rating">${renderStars(food.rating)} <span>${food.rating}.0</span></div>
+            <div class="slide-desc">${escapeHtml(food.desc)}</div>
+            <button class="slide-btn" data-id="${food.id}">PESAN SEKARANG</button>
+          </div>
+        </div>
+      `;
+      container.appendChild(slide);
+    });
+    
+    updateDots();
+    
+    // Event listener untuk tombol pesan
+    document.querySelectorAll('.slide-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const id = btn.getAttribute('data-id');
+        alert(`Menu ID: ${id}\nAkan diarahkan ke halaman pemesanan.`);
+      });
+    });
+  }
+
+  function updateDots() {
+    const dotsContainer = document.getElementById('carouselDots');
+    if (!dotsContainer) return;
+    dotsContainer.innerHTML = '';
+    sliderFoods.forEach((_, index) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (index === currentSlide) dot.classList.add('active');
+      dot.addEventListener('click', () => {
+        currentSlide = index;
+        renderSlider();
+        resetAutoSlide();
+      });
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % sliderFoods.length;
+    renderSlider();
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + sliderFoods.length) % sliderFoods.length;
+    renderSlider();
+  }
+
+  // Auto slide every 5 seconds
+  let autoSlideInterval = setInterval(nextSlide, 5000);
+
+  function resetAutoSlide() {
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = setInterval(nextSlide, 5000);
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // ========== EVENT LISTENERS ==========
+  document.getElementById('prevBtn')?.addEventListener('click', () => {
+    prevSlide();
+    resetAutoSlide();
+  });
+  document.getElementById('nextBtn')?.addEventListener('click', () => {
+    nextSlide();
+    resetAutoSlide();
+  });
+
+  // Pause auto slide saat hover di carousel
+  const sliderContainer = document.querySelector('.carousel-container');
+  if (sliderContainer) {
+    sliderContainer.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
+    sliderContainer.addEventListener('mouseleave', () => {
+      clearInterval(autoSlideInterval);
+      autoSlideInterval = setInterval(nextSlide, 5000);
+    });
+  }
+
+  // ========== INITIAL RENDER ==========
+  renderSlider();
+</script>
 </body>
 </html>
