@@ -14,7 +14,7 @@ if (isset($_POST['login'])) {
         header("Location: dashboard.php");
         exit();
     } else {
-        $_SESSION['login_error'] = "Username atau password salah!";
+        $_SESSION['login_error'] = "USERNAME ATAU PASSWORD SALAH!";
         header("Location: login.php");
         exit();
     }

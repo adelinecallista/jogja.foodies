@@ -630,3 +630,70 @@ hr {
   font-weight: 600;
   margin-bottom: 15px;
 }
+
+/* ========== DASHBOARD ADMIN ========== */
+.dashboard-section {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fff9f0 0%, #fff0e0 100%);
+  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.dashboard-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+  padding: 40px;
+  max-width: 700px;
+  width: 100%;
+}
+
+.dashboard-card h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+}
+
+.dashboard-card h2 span {
+  color: #ff5e00;
+}
+
+.dashboard-card p {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.dashboard-links {
+  list-style: none;
+  padding: 0;
+  text-align: center;
+}
+
+.dashboard-links li {
+  margin-bottom: 15px;
+}
+
+.dashboard-links a {
+  display: block;
+  width: 100%;
+  background: #ff5e00;
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: 0.2s;
+  box-shadow: 0 4px 12px rgba(255,94,0,0.3);
+}
+
+.dashboard-links a:hover {
+  background: #e05500;
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(255,94,0,0.4);
+}
