@@ -533,20 +533,20 @@ hr {
 }
 
 .login-section {
-  background: linear-gradient(135deg, #fff9f0 0%, #fff0e0 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
+  background: linear-gradient(135deg, #fff9f0 0%, #fff0e0 100%);
 }
 
 .login-card {
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 12px 25px rgba(0,0,0,0.08);
-  padding: 40px;
-  max-width: 400px;
+  padding: 60px;
+  max-width: 600px;
   width: 100%;
   text-align: center;
 }
@@ -554,7 +554,7 @@ hr {
 .login-card h2 {
   font-family: 'Poppins', sans-serif;
   font-weight: 800;
-  font-size: 1.8rem;
+  font-size: 2.5rem;
   margin-bottom: 25px;
   color: #1a1a1a;
 }
@@ -574,11 +574,11 @@ hr {
 
 .login-card input {
   width: 100%;
-  padding: 12px 14px;
+  padding: 14px 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
   margin-bottom: 18px;
-  font-size: 0.85rem;
+  font-size: 1rem;
   transition: 0.2s;
 }
 
@@ -622,4 +622,11 @@ hr {
 
 .login-footer a:hover {
   text-decoration: underline;
+}
+
+.error-message {
+  color: #ff0000;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 15px;
 }
