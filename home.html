@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jogja.Foodies - Home</title>
+
+  <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='85'>🍽️</text></svg>">
   <!-- Bootstrap 5 -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
@@ -15,10 +17,18 @@
 </head>
 <body>
 
+<<<<<<< HEAD
 <!-- NAVBAR mirip TIX.ID -->
 <nav class="navbar navbar-expand-lg navbar-custom st icky-top">
+=======
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+>>>>>>> 8809a592bf16e7462f9a0b3ab61a3324c4f3d64b
   <div class="container">
-    <a class="navbar-brand" href="#">JOGJA.<span>FOODIES</span></a>
+    <a class="navbar-brand" href="#">
+  <img src="logo.jpeg" alt="Logo" height="35" class="d-inline-block align-middle me-2">
+  JOGJA.<span>FOODIES</span>
+</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -138,60 +148,59 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   // ========== DATA SLIDER (SEDANG POPULER) ==========
-  // Lo bisa ganti foto dan data makanan di sini sesuka hati!
   const sliderFoods = [
     {
       id: 1,
       name: "Gudeg Mbok Darmi",
       chef: "Mbok Darmi",
       rating: 5,
-      image: "https://asset.kompas.com/crops/6d2z0HTdykMY2OVS_el9R0XmI8Q=/0x0:1000x667/750x500/data/photo/2020/08/03/5f27b5c56c51c.jpg",
+      image: "gudeg.jpeg",
       desc: "Dari dapur tradisional ke hati kamu",
       location: "Kota Gede"
     },
     {
       id: 2,
-      name: "Sate Klathak",
+      name: "Thiwul",
       chef: "Pak Sahman",
       rating: 5,
-      image: "https://cdn.idntimes.com/content-images/post/20220124/sate-klathak-famous-dac6c898592d5100a05fe10d73d985c1.jpg",
+      image: "thiwul.jpeg",
       desc: "Daging empuk dengan bumbu rempah khas",
       location: "Bantul"
     },
     {
       id: 3,
-      name: "Bakpia Pathok",
+      name: "Bakpia Pathuk 25",
       chef: "Keluarga Pathok",
       rating: 4,
-      image: "https://www.masakapahariini.com/wp-content/uploads/2022/03/bakpia-pathok-750x500.jpg",
+      image: "bakpia.jpeg",
       desc: "Oleh-oleh legendaris Jogja",
       location: "Pathuk"
     },
     {
       id: 4,
-      name: "Mie Lethek",
+      name: "Cendol",
       chef: "Mbah Kromo",
       rating: 4,
-      image: "https://cdn0-production-images-kly.akamaized.net/d66GQpOkbJh69pY2Klyo4hk9x6U=/1200x675/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/3199005/original/096550200_1596177583-shutterstock_334997934.jpg",
-      desc: "Mie hitam khas Imogiri",
+      image: "cendol.jpeg",
+      desc: "Cendol Dawet",
       location: "Imogiri"
     },
     {
       id: 5,
-      name: "Angkringan Lik Man",
+      name: "Wedhang Ronde",
       chef: "Lik Man",
       rating: 5,
-      image: "https://cdn0-production-images-kly.akamaized.net/-sC20JUaSmOoi5XqHj5qObdrslI=/1200x675/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/2983090/original/011460800_1575629643-angkringan.jpg",
-      desc: "Nasi kucing, sate usus, wedang jahe",
+      image: "wedang.jpeg",
+      desc: "wedhang ronde",
       location: "Malioboro"
     },
     {
       id: 6,
-      name: "Kopi Joss",
+      name: "Wedhang Uwuh",
       chef: "Mang Ujang",
       rating: 4,
-      image: "https://cdn.idntimes.com/content-images/post/20181023/kopi-joss-4e9cba5456702d73b303f80e4511e48b.jpg",
-      desc: "Kopi dengan arang, khas Malioboro",
+      image: "WedangUwuh.jpeg",
+      desc: "Wedang uwuh kaya akan rempah",
       location: "Malioboro"
     }
   ];
