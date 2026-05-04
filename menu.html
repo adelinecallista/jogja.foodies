@@ -26,9 +26,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarMain">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link active" href="home.html">HOME</a></li>
-        <li class="nav-item"><a class="nav-link" href="menu.html">MENU</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.php">LOGIN</a></li>
+        <li class="nav-item">
+          <a class="nav-link" id="nav-home" href="home.html">HOME</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="nav-menu" href="menu.html">MENU</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="nav-login" href="login.php">LOGIN</a>
+        </li>
       </ul>
     </div>
   </div>
@@ -96,7 +102,6 @@ body {
 <body>
 
 <div class="navbar">
-    <h3>Menu Saya</h3>
 </div>
 
 <h2 class="title">Makanan</h2>
@@ -106,19 +111,19 @@ body {
     <div class="card">
         <img src="thiwul.jpeg">
         <h3>Thiwul</h3>
-        <a href="detail1.html"><button class="btn">Detail</button></a>
+        <a href="detail.php?id=3&type=makanan"><button class="btn">Detail</button></a>
     </div>
 
     <div class="card">
         <img src="gudeg.jpeg">
         <h3>Gudeg</h3>
-        <a href="detail2.html"><button class="btn">Detail</button></a>
+        <a href="detail.php?id=1&type=makanan"><button class="btn">Detail</button></a>
     </div>
 
     <div class="card">
         <img src="bakpia.jpeg">
         <h3>Bakpia</h3>
-        <a href="detail3.html"><button class="btn">Detail</button></a>
+        <a href="detail.php?id=2&type=makanan"><button class="btn">Detail</button></a>
     </div>
 
 </div>
@@ -130,22 +135,20 @@ body {
     <div class="card">
         <img src="cendol.jpeg">
         <h3>Cendol</h3>
-        <a href="detail4.html"><button class="btn">Detail</button></a>
+        <a href="detail.php?id=1&type=minuman"><button class="btn">Detail</button></a>
     </div>
 
     <div class="card">
         <img src="wedang.jpeg">
         <h3>Ronde</h3>
-        <a href="detail5.html"><button class="btn">Detail</button></a>
+        <a href="detail.php?id=2&type=minuman"><button class="btn">Detail</button></a>
     </div>
 
     <div class="card">
         <img src="WedangUwuh.jpeg">
         <h3>Wedang Uwuh</h3>
-        <a href="detail6.html"><button class="btn">Detail</button></a>
+        <a href="detail.php?id=3&type=minuman"><button class="btn">Detail</button></a>
     </div>
-
 </div>
-
 </body>
 </html>

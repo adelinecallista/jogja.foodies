@@ -29,7 +29,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarMain">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link active" href="home.html">HOME</a></li>
+        <li class="nav-item"><a class="nav-link" href="home.html">HOME</a></li>
         <li class="nav-item"><a class="nav-link" href="menu.html">MENU</a></li>
         <li class="nav-item"><a class="nav-link" href="login.php">LOGIN</a></li>
       </ul>
@@ -37,7 +37,6 @@
   </div>
 </nav>
 
-<!-- HERO SECTION -->
 <div class="hero-section">
   <div class="container">
     <div class="hero-content text-center">
@@ -47,12 +46,11 @@
   </div>
 </div>
 
-<!-- SLIDER SECTION - SEDANG TAYANG (mirip tix.id) -->
 <div class="slider-section">
   <div class="container">
     <div class="section-header d-flex justify-content-between align-items-center mb-3">
       <h2 class="section-title">SEDANG <span>POPULER</span></h2>
-      <a href="#" class="view-all">LIHAT SEMUA <i class="fas fa-arrow-right"></i></a>
+      <a href="menu.html" class="view-all">LIHAT SEMUA <i class="fas fa-arrow-right"></i></a>
     </div>
     <p class="slider-subtitle">FROM THE STREET OF JOGJA, TO YOUR PLATE</p>
     <p class="slider-subtitle2">AND THE TASTE OF <span>AUTHENTIC INDONESIA</span></p>
@@ -60,7 +58,6 @@
     <!-- CAROUSEL SLIDER -->
     <div class="carousel-container">
       <div class="carousel-slide" id="foodSlider">
-        <!-- slides akan diisi JavaScript otomatis -->
       </div>
       <button class="carousel-btn prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
       <button class="carousel-btn next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
@@ -69,7 +66,6 @@
   </div>
 </div>
 
-<!-- DESKRIPSI / QUOTE SECTION (mirip tix.id) -->
 <div class="quote-section">
   <div class="container text-center">
     <p class="quote-text">ENJOY THE BEST FOOD AND CULINARY EXPERIENCE IN JOGJA, KEEP UP TO DATE WITH THE LATEST MENU,</p>
@@ -79,23 +75,7 @@
   </div>
 </div>
 
-<!-- PARTNERS SECTION -->
-<div class="partners-section">
-  <div class="container">
-    <p class="partners-title">OUR PARTNERS</p>
-    <div class="partners-logos">
-      <span>GUDEG</span>
-      <span>SATE</span>
-      <span>BAKPIA</span>
-      <span>ANGKRINGAN</span>
-      <span>MIE LETHEK</span>
-      <span>KOPI JOSS</span>
-      <span>WEDANG RONDE</span>
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER (mirip tix.id) -->
+<!-- FOOTER -->
 <footer>
   <div class="container">
     <div class="row">
@@ -103,9 +83,6 @@
         <h4>JOGJA.<span>FOODIES</span></h4>
         <p>Best App For Culinary Lovers In Jogja! Discover The Best Traditional And Modern Foods From The City Of Gudeg.</p>
         <div class="app-buttons mt-2">
-          <!-- <span>App Store</span>
-          <span>Play Store</span>
-          <span>App Gallery</span> -->
         </div>
       </div>
       <div class="col-md-2">
@@ -142,7 +119,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // ========== DATA SLIDER (SEDANG POPULER) ==========
   const sliderFoods = [
     {
       id: 1,
@@ -200,7 +176,6 @@
     }
   ];
 
-  // ========== FUNGSI BINTANG RATING ==========
   function renderStars(rating) {
     let stars = '';
     for (let i = 1; i <= 5; i++) {
@@ -213,7 +188,6 @@
     return stars;
   }
 
-  // ========== SLIDER LOGIC ==========
   let currentSlide = 0;
 
   function renderSlider() {
@@ -244,7 +218,6 @@
     
     updateDots();
     
-    // Event listener untuk tombol pesan
     document.querySelectorAll('.slide-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -299,7 +272,6 @@
     });
   }
 
-  // ========== EVENT LISTENERS ==========
   document.getElementById('prevBtn')?.addEventListener('click', () => {
     prevSlide();
     resetAutoSlide();
@@ -309,7 +281,6 @@
     resetAutoSlide();
   });
 
-  // Pause auto slide saat hover di carousel
   const sliderContainer = document.querySelector('.carousel-container');
   if (sliderContainer) {
     sliderContainer.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
@@ -319,8 +290,20 @@
     });
   }
 
-  // ========== INITIAL RENDER ==========
   renderSlider();
+</script>
+<script>
+  // Set active navbar berdasarkan URL saat ini
+  const path = window.location.pathname;
+  const page = path.split("/").pop();
+  
+  if (page === "home.html" || page === "") {
+    document.getElementById("nav-home")?.classList.add("active");
+  } else if (page === "menu.html") {
+    document.getElementById("nav-menu")?.classList.add("active");
+  } else if (page === "login.php") {
+    document.getElementById("nav-login")?.classList.add("active");
+  }
 </script>
 </body>
 </html>
