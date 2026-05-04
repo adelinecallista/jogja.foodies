@@ -15,6 +15,7 @@
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
   <div class="container">
     <a class="navbar-brand" href="#">
@@ -26,13 +27,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarMain">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item"><a class="nav-link active" href="home.html">HOME</a></li>
+        <li class="nav-item"><a class="nav-link" href="home.html">HOME</a></li>
         <li class="nav-item"><a class="nav-link" href="menu.html">MENU</a></li>
         <li class="nav-item"><a class="nav-link" href="login.php">LOGIN</a></li>
       </ul>
     </div>
   </div>
 </nav>
+
 <div class="login-section">
   <div class="login-card">
     <h2>Login to Your <span>Account</span></h2>
