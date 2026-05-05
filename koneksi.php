@@ -2,7 +2,7 @@
     $host = "localhost";
     $user = "root";
     $pass = "";
-    $db   = "jogja_foodies";
+    $db   = "jogja.foodies";
 
     $conn = mysqli_connect($host, $user, $pass, $db);
 
