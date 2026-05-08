@@ -1,60 +1,102 @@
 <?php
-// file: index.php
+// file: order.php
 session_start();
-require_once 'config/koneksi.php';
+require_once 'koneksi.php';
 
-// Inisialisasi koneksi (sesuai modul)
-$konek = getKoneksi();
+// Check if user is logged in
+if(!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
 
-// Get popular foods from database (ambil 6 makanan untuk featured)
-$query = "SELECT id, name, description, price, category, location, rating FROM foods ORDER BY rating DESC LIMIT 6";
+// Get food ID from URL
+$food_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+if($food_id <= 0) {
+    header("Location: menu.php");
+    exit();
+}
+
+// Get quantity from URL
+$quantity = isset($_GET['quantity']) ? (int)$_GET['quantity'] : 1;
+if($quantity < 1) $quantity = 1;
+if($quantity > 99) $quantity = 99;
+
+// Get food data from database (MySQLi)
+$query = "SELECT * FROM foods WHERE id = $food_id";
 $result = mysqli_query($konek, $query);
-$popular_foods = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $popular_foods[] = $row;
+$food = mysqli_fetch_assoc($result);
+
+if(!$food) {
+    header("Location: menu.php");
+    exit();
 }
 
-// Get top 3 rated foods
-$top_query = "SELECT id, name, description, location, rating FROM foods ORDER BY rating DESC LIMIT 3";
-$top_result = mysqli_query($konek, $top_query);
-$top_foods = [];
-while ($row = mysqli_fetch_assoc($top_result)) {
-    $top_foods[] = $row;
-}
+// Get user data
+$user_query = "SELECT * FROM users WHERE id = " . $_SESSION['user_id'];
+$user_result = mysqli_query($konek, $user_query);
+$user = mysqli_fetch_assoc($user_result);
 
-// Get stats from database
-$stats_query = "SELECT 
-    (SELECT COUNT(*) FROM foods) as total_foods,
-    (SELECT COUNT(*) FROM users) as total_users,
-    (SELECT AVG(rating) FROM foods) as avg_rating";
-$stats_result = mysqli_query($konek, $stats_query);
-$stats = mysqli_fetch_assoc($stats_result);
-
-// Set default values jika NULL
-if (!$stats['total_foods']) $stats['total_foods'] = 0;
-if (!$stats['total_users']) $stats['total_users'] = 0;
-if (!$stats['avg_rating']) $stats['avg_rating'] = 0;
-
-$current_page = basename($_SERVER['PHP_SELF']);
-
-// Fungsi untuk mendapatkan path gambar (sederhana)
+// Fungsi gambar
 function getFoodImage($food_name) {
     $clean_name = strtolower(str_replace(' ', '', $food_name));
     
-    $image_map = [
-        'bakpia' => 'assets/bakpia.jpeg',
-        'cendol' => 'assets/cendol.jpeg',
-        'gudeg' => 'assets/gudeg.jpeg',
-        'thiwul' => 'assets/thiwul.jpeg',
-        'wedang' => 'assets/wedang.jpeg',
-    ];
+    if(strpos($clean_name, 'gudeg') !== false) return 'assets/gudeg.jpeg';
+    if(strpos($clean_name, 'bakpia') !== false) return 'assets/bakpia.jpeg';
+    if(strpos($clean_name, 'cendol') !== false) return 'assets/cendol.jpeg';
+    if(strpos($clean_name, 'thiwul') !== false) return 'assets/thiwul.jpeg';
+    if(strpos($clean_name, 'wedang') !== false) return 'assets/wedang.jpeg';
     
-    foreach($image_map as $key => $image) {
-        if(strpos($clean_name, $key) !== false) {
-            return $image;
+    return 'assets/gudeg.jpeg';
+}
+
+// Get form values from POST or default
+$delivery_method = isset($_POST['delivery_method']) ? $_POST['delivery_method'] : 'pickup';
+$payment_method = isset($_POST['payment_method']) ? $_POST['payment_method'] : 'cash';
+$notes = isset($_POST['notes']) ? trim($_POST['notes']) : '';
+$delivery_fee = ($delivery_method == 'delivery') ? 10000 : 0;
+$total = ($food['price'] * $quantity) + $delivery_fee;
+$error = '';
+
+// Process order if form submitted
+if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
+    if($quantity < 1) {
+        $error = "Jumlah minimal 1";
+    } else {
+        // Generate unique order number
+        $order_number = 'JGF-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
+        
+        // Insert order ke database (MySQLi)
+        // Insert order ke database (MySQLi) - TANPA created_at
+$insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, quantity, price_per_item, delivery_fee, total_amount, delivery_method, payment_method, notes, status) 
+                VALUES ('$order_number', {$_SESSION['user_id']}, $food_id, '{$food['name']}', $quantity, {$food['price']}, $delivery_fee, $total, '$delivery_method', '$payment_method', '$notes', 'pending')"; 
+        
+        if(mysqli_query($konek, $insert_query)) {
+            // Get the inserted order ID
+            $order_id = mysqli_insert_id($konek);
+            
+            // Save to session for success page
+            $_SESSION['order_success'] = true;
+            $_SESSION['order_data'] = [
+                'order_id' => $order_id,
+                'order_number' => $order_number,
+                'food_id' => $food['id'],
+                'food_name' => $food['name'],
+                'quantity' => $quantity,
+                'price_per_item' => $food['price'],
+                'total' => $total,
+                'delivery_method' => $delivery_method,
+                'payment_method' => $payment_method,
+                'notes' => $notes,
+                'delivery_fee' => $delivery_fee
+            ];
+            
+            header("Location: order_success.php");
+            exit();
+        } else {
+            $error = "Gagal memproses pesanan: " . mysqli_error($konek);
         }
     }
-    return 'assets/gudeg.jpeg';
 }
 ?>
 
@@ -63,13 +105,11 @@ function getFoodImage($food_name) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogja Foodies - Discover Authentic Yogyakarta Cuisine</title>
+    <title>Pesan Makanan - Jogja Foodies</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        /* Sama seperti CSS Anda sebelumnya, saya pertahankan */
         * {
             margin: 0;
             padding: 0;
@@ -78,592 +118,464 @@ function getFoodImage($food_name) {
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f8f9fa;
-            color: #2d3436;
+            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            min-height: 100vh;
+            padding: 2rem;
         }
 
-        .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 1rem 0;
+        .order-container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .navbar-brand {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #FF6B35 !important;
-        }
-
-        .navbar-brand i {
-            color: #FF6B35;
-        }
-
-        .nav-link {
-            color: #2d3436 !important;
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
             font-weight: 500;
-            margin: 0 1rem;
+            margin-bottom: 1.5rem;
             transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        .nav-link:hover {
-            color: #FF6B35 !important;
+        .back-btn:hover {
+            background: rgba(255,255,255,0.3);
+            color: white;
+            transform: translateX(-5px);
         }
 
-        .nav-link.active-red {
-            color: #FF6B35 !important;
-            font-weight: 600;
+        .order-card {
+            background: white;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .food-preview {
+            flex: 1;
+            min-width: 300px;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             position: relative;
+            overflow: hidden;
         }
 
-        .nav-link.active-red::after {
+        .food-preview::before {
             content: '';
             position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: #FF6B35;
-            border-radius: 3px;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
         }
 
-        .btn-outline-dark {
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .food-image {
+            width: 250px;
+            height: 250px;
+            border-radius: 30px;
+            object-fit: cover;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 2;
+            border: 4px solid rgba(255,255,255,0.3);
+        }
+
+        .food-category {
+            position: relative;
+            z-index: 2;
+            margin-top: 1.5rem;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1.5rem;
             border-radius: 50px;
-            padding: 0.5rem 1.8rem;
-            border: 2px solid #FF6B35;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .food-rating {
+            position: relative;
+            z-index: 2;
+            margin-top: 0.8rem;
+            color: #FFD166;
+            font-size: 0.9rem;
+        }
+
+        .food-rating span {
+            color: white;
+            margin-left: 0.3rem;
+        }
+
+        .order-form {
+            flex: 1.2;
+            min-width: 350px;
+            padding: 2rem;
+            background: white;
+        }
+
+        .order-form h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 0.3rem;
+        }
+
+        .food-location {
+            color: #636e72;
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .food-location i {
             color: #FF6B35;
-            background: transparent;
+            margin-right: 0.3rem;
+        }
+
+        .price-container {
+            background: #FFF5F0;
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .price-label {
+            font-size: 0.8rem;
+            color: #636e72;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .food-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #FF6B35;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .form-group label i {
+            color: #FF6B35;
+            margin-right: 0.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #FF6B35;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+        }
+
+        .quantity-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .quantity-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #2d3436;
             transition: all 0.3s;
         }
 
-        .btn-outline-dark:hover {
+        .quantity-btn:hover {
             background: #FF6B35;
             border-color: #FF6B35;
             color: white;
         }
 
-        .btn-primary-custom {
-            background: #FF6B35;
-            border: none;
-            padding: 0.5rem 1.8rem;
-            border-radius: 50px;
-            font-weight: 600;
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .btn-primary-custom:hover {
-            background: #e55a2b;
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-
-        .hero {
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFD166 100%);
-            min-height: 90vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-            background-size: cover;
-            opacity: 0.3;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            color: white;
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-        }
-
-        .hero p {
+        .quantity-value {
             font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.95;
-        }
-
-        .btn-hero-primary {
-            background: white;
-            color: #FF6B35;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
             font-weight: 600;
-            margin-right: 1rem;
-            transition: all 0.3s;
-            border: none;
-            text-decoration: none;
-            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
+            min-width: 80px;
+            text-align: center;
         }
 
-        .btn-hero-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            color: #FF6B35;
+        .total-section {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .btn-hero-outline {
-            background: transparent;
-            border: 2px solid white;
-            color: white;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
+        .total-label {
             font-weight: 600;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-hero-outline:hover {
-            background: white;
-            color: #FF6B35;
-            transform: translateY(-3px);
-        }
-
-        .stats-section {
-            background: white;
-            padding: 4rem 0;
-            margin-top: -50px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .stat-card {
-            text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: #FF6B35;
-        }
-
-        .stat-label {
-            color: #636e72;
-            font-weight: 500;
-            margin-top: 0.5rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-align: center;
             color: #2d3436;
         }
 
-        .section-subtitle {
-            text-align: center;
-            color: #636e72;
-            margin-bottom: 3rem;
-        }
-
-        .top-rated-section {
-            background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
-            padding: 5rem 0;
-            margin: 3rem 0;
-        }
-
-        .top-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            height: 100%;
-        }
-
-        .top-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(255,107,53,0.15);
-        }
-
-        .rank {
-            font-size: 3rem;
+        .total-amount {
+            font-size: 1.5rem;
             font-weight: 800;
-            display: inline-block;
-            width: 70px;
-            height: 70px;
-            line-height: 70px;
-            border-radius: 50%;
+            color: #FF6B35;
+        }
+
+        .btn-order {
+            width: 100%;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s;
             margin-bottom: 1rem;
+            cursor: pointer;
         }
 
-        .rank-1 {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: white;
+        .btn-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255,107,53,0.3);
         }
 
-        .rank-2 {
-            background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
-            color: white;
+        .btn-cancel {
+            width: 100%;
+            background: transparent;
+            border: 2px solid #e9ecef;
+            padding: 0.8rem;
+            border-radius: 12px;
+            color: #636e72;
+            font-weight: 500;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+            text-decoration: none;
         }
 
-        .rank-3 {
-            background: linear-gradient(135deg, #CD7F32, #B87333);
-            color: white;
+        .btn-cancel:hover {
+            border-color: #FF6B35;
+            color: #FF6B35;
         }
 
-        .rating {
-            color: #fdcb6e;
-            margin-bottom: 0.5rem;
+        .payment-methods {
+            margin: 1rem 0;
+        }
+
+        .payment-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #636e72;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .payment-option {
+            flex: 1;
+            padding: 0.7rem;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .payment-option input {
+            margin-right: 0.5rem;
+            accent-color: #FF6B35;
+        }
+
+        .alert-error {
+            background: #fff5f0;
+            color: #FF6B35;
+            border-left: 4px solid #FF6B35;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
             font-size: 0.85rem;
         }
 
-        .rating span {
-            color: #636e72;
-            margin-left: 0.5rem;
-        }
-
-        .location {
-            color: #636e72;
-            font-size: 0.75rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .location i {
-            color: #FF6B35;
-            margin-right: 0.3rem;
-        }
-
-        .cta-section {
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
-            padding: 5rem 0;
-            border-radius: 0;
-            color: white;
-        }
-
-        .btn-cta {
-            background: white;
-            color: #FF6B35;
-            padding: 0.8rem 2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: none;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-cta:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            color: #FF6B35;
-        }
-
-        footer {
-            background: #1e272e;
-            color: #d2dae2;
-            padding: 4rem 0 2rem;
-        }
-
-        .footer-brand {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #FF6B35;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
-
-        footer h6 {
-            color: white;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-
-        footer a {
-            color: #d2dae2;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        footer a:hover {
-            color: #FF6B35;
-        }
-
-        .social-icons a {
-            display: inline-block;
-            width: 35px;
-            height: 35px;
-            line-height: 35px;
-            text-align: center;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            transition: all 0.3s;
-        }
-
-        .social-icons a:hover {
-            background: #FF6B35;
-            transform: translateY(-3px);
-        }
-
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
+            body {
+                padding: 1rem;
             }
             
-            .section-title {
-                font-size: 1.8rem;
+            .food-image {
+                width: 180px;
+                height: 180px;
             }
             
-            .btn-hero-primary, .btn-hero-outline {
-                padding: 0.7rem 1.5rem;
-                margin-bottom: 1rem;
-                display: block;
-                width: 100%;
-                text-align: center;
+            .order-form {
+                padding: 1.5rem;
             }
             
-            .stats-section {
-                margin-top: 0;
+            .order-form h2 {
+                font-size: 1.4rem;
+            }
+            
+            .food-price {
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <i class="fas fa-utensils fs-3 me-2" style="color: #FF6B35;"></i>
-            <span class="fw-bold fs-4" style="color: #FF6B35;">Jogja Foodies</span>
-        </a>
-        
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a class="nav-link fw-bold <?= ($current_page == 'index.php') ? 'active-red' : '' ?>" href="index.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-bold" href="menu.php">Menu</a>
-                </li>
-            </ul>
+<div class="order-container">
+    <a href="menu.php" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Menu
+    </a>
+    
+    <div class="order-card">
+        <!-- Left Side - Food Preview -->
+        <div class="food-preview">
+            <img src="<?php echo getFoodImage($food['name']); ?>" alt="<?php echo htmlspecialchars($food['name']); ?>" class="food-image">
+            <div class="food-category">
+                <i class="fas fa-tag"></i> <?php echo htmlspecialchars($food['category']); ?>
+            </div>
+            <div class="food-rating">
+                <?php for($i = 1; $i <= 5; $i++): ?>
+                    <?php if($i <= $food['rating']): ?>
+                        <i class="fas fa-star"></i>
+                    <?php elseif($i - 0.5 <= $food['rating']): ?>
+                        <i class="fas fa-star-half-alt"></i>
+                    <?php else: ?>
+                        <i class="far fa-star"></i>
+                    <?php endif; ?>
+                <?php endfor; ?>
+                <span>(<?php echo number_format($food['rating'], 1); ?>)</span>
+            </div>
         </div>
         
-        <div class="d-flex align-items-center" style="gap: 10px;">
-            <i class="bi bi-search fs-5 cursor-pointer" style="cursor: pointer; color: #FF6B35;"></i>
+        <!-- Right Side - Order Form -->
+        <div class="order-form">
+            <h2><?php echo htmlspecialchars($food['name']); ?></h2>
+            <div class="food-location">
+                <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($food['location']); ?>
+            </div>
             
-            <?php if(isset($_SESSION['user_id'])): ?>
-                <div class="dropdown d-inline-block">
-                    <button class="btn rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" style="background: #FF6B35; color: white; border: none;">
-                        <i class="fas fa-user-circle"></i> <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username']) ?>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="my_orders.php"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </div>
-            <?php else: ?>
-                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #FF6B35; color: white;">Masuk</a>
-                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #FF6B35; color: #FF6B35;">Daftar</a>
+            <div class="price-container">
+                <div class="price-label">Harga per porsi</div>
+                <div class="food-price">Rp <?php echo number_format($food['price'], 0, ',', '.'); ?></div>
+            </div>
+            
+            <?php if($error): ?>
+            <div class="alert-error">
+                <i class="fas fa-exclamation-circle"></i> <?php echo $error; ?>
+            </div>
             <?php endif; ?>
-        </div>
-    </div>
-</nav>
-
-<!-- Hero Section -->
-<section class="hero">
-    <div class="container hero-content">
-        <div class="row">
-            <div class="col-lg-7">
-                <h1>Discover Authentic <br>Yogyakarta Cuisine</h1>
-                <p class="lead">Explore the rich flavors of Jogja's culinary heritage. From legendary Gudeg to hidden gem Angkringan, find your next favorite dish with Jogja Foodies.</p>
-                <div>
-                    <a href="menu.php" class="btn-hero-primary">
-                        Explore Menu <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <a href="#" class="btn-hero-outline">
-                        Watch Story <i class="fas fa-play"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Stats Section -->
-<section class="stats-section">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number"><?php echo number_format($stats['total_foods']); ?>+</div>
-                    <div class="stat-label">Food Vendors</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number"><?php echo number_format($stats['total_users']); ?>+</div>
-                    <div class="stat-label">Happy Foodies</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number"><?php echo number_format($stats['total_foods']); ?>+</div>
-                    <div class="stat-label">Authentic Dishes</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number"><?php echo number_format($stats['avg_rating'], 1); ?></div>
-                    <div class="stat-label">Rating Average</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Top Rated Section -->
-<section class="top-rated-section">
-    <div class="container">
-        <h2 class="section-title">⭐ Top Rated <span style="color: #FF6B35;">Dishes</span></h2>
-        <p class="section-subtitle">Highest rated foods by our foodies community</p>
-        
-        <div class="row g-4">
-            <?php if(count($top_foods) >= 1): ?>
-                <?php 
-                $ranks = ['rank-1', 'rank-2', 'rank-3'];
-                $icons = ['fa-crown', 'fa-medal', 'fa-award'];
-                foreach($top_foods as $index => $food): 
-                ?>
-                <div class="col-md-4">
-                    <div class="top-card">
-                        <div class="rank <?php echo $ranks[$index]; ?>">
-                            <i class="fas <?php echo $icons[$index]; ?>"></i>
-                        </div>
-                        <h4 class="fw-bold mt-3"><?php echo htmlspecialchars($food['name']); ?></h4>
-                        <div class="rating mb-2">
-                            <?php 
-                            $full = floor($food['rating']);
-                            $half = ($food['rating'] - $full) >= 0.5;
-                            for($i = 1; $i <= 5; $i++):
-                                if($i <= $full): ?>
-                                    <i class="fas fa-star"></i>
-                                <?php elseif($half && $i == $full + 1): ?>
-                                    <i class="fas fa-star-half-alt"></i>
-                                <?php else: ?>
-                                    <i class="far fa-star"></i>
-                                <?php endif;
-                            endfor; ?>
-                            <span>(<?php echo number_format($food['rating'], 1); ?>)</span>
-                        </div>
-                        <p class="text-muted"><?php echo htmlspecialchars(substr($food['description'] ?? '', 0, 50)); ?></p>
-                        <div class="location">
-                            <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($food['location']); ?>
-                        </div>
+            
+            <form method="POST" action="">
+                <input type="hidden" name="food_id" value="<?php echo $food['id']; ?>">
+                
+                <!-- Quantity -->
+                <div class="form-group">
+                    <label><i class="fas fa-shopping-cart"></i> Jumlah Pesanan</label>
+                    <div class="quantity-wrapper">
+                        <a href="?id=<?php echo $food_id; ?>&quantity=<?php echo max(1, $quantity-1); ?>" class="quantity-btn">-</a>
+                        <span class="quantity-value"><?php echo $quantity; ?></span>
+                        <a href="?id=<?php echo $food_id; ?>&quantity=<?php echo min(99, $quantity+1); ?>" class="quantity-btn">+</a>
                     </div>
                 </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="col-12 text-center">
-                    <div class="alert alert-info">Belum ada data rating. Silakan tambahkan data ke database.</div>
+                
+                <!-- Notes -->
+                <div class="form-group">
+                    <label><i class="fas fa-pen"></i> Catatan (opsional)</label>
+                    <textarea name="notes" class="form-control" rows="2" placeholder="Misal: tidak pedas, porsi banyak, tambah sambal..."><?php echo htmlspecialchars($notes); ?></textarea>
                 </div>
-            <?php endif; ?>
-        </div>
-    </div>
-</section>
-
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h2 class="fw-bold mb-3">Ready to Explore Jogja's Culinary?</h2>
-                <p class="lead mb-0">Join thousands of foodies who discover authentic flavors every day</p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <a href="register.php" class="btn-cta">
-                    Join Now <i class="fas fa-user-plus"></i>
+                
+                <!-- Delivery Method -->
+                <div class="form-group">
+                    <label><i class="fas fa-truck"></i> Metode Pengiriman</label>
+                    <select name="delivery_method" class="form-select" onchange="this.form.submit()">
+                        <option value="pickup" <?php echo $delivery_method == 'pickup' ? 'selected' : ''; ?>>Pickup (Gratis)</option>
+                        <option value="delivery" <?php echo $delivery_method == 'delivery' ? 'selected' : ''; ?>>Delivery (Rp 10.000)</option>
+                    </select>
+                </div>
+                
+                <!-- Payment Method -->
+                <div class="payment-methods">
+                    <div class="payment-title">Metode Pembayaran</div>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input type="radio" name="payment_method" value="cash" <?php echo $payment_method == 'cash' ? 'checked' : ''; ?>> Cash
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment_method" value="qris" <?php echo $payment_method == 'qris' ? 'checked' : ''; ?>> QRIS
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment_method" value="transfer" <?php echo $payment_method == 'transfer' ? 'checked' : ''; ?>> Transfer
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Total -->
+                <div class="total-section">
+                    <span class="total-label">Total Pembayaran</span>
+                    <span class="total-amount">
+                        Rp <?php echo number_format($total, 0, ',', '.'); ?>
+                    </span>
+                </div>
+                
+                <!-- Buttons -->
+                <button type="submit" name="confirm_order" class="btn-order">
+                    <i class="fas fa-check-circle"></i> Konfirmasi Pesanan
+                </button>
+                <a href="menu.php" class="btn-cancel">
+                    <i class="fas fa-times"></i> Batal
                 </a>
-            </div>
+            </form>
         </div>
     </div>
-</section>
+</div>
 
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <div class="footer-brand">
-                    <i class="fas fa-utensils"></i> Jogja Foodies
-                </div>
-                <p>Discover the authentic taste of Yogyakarta through our curated culinary platform.</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="col-md-2 mb-4">
-                <h6>Quick Links</h6>
-                <ul class="list-unstyled">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="col-md-3 mb-4">
-                <h6>Contact Info</h6>
-                <ul class="list-unstyled">
-                    <li><i class="fas fa-map-marker-alt"></i> Yogyakarta, Indonesia</li>
-                    <li><i class="fas fa-envelope"></i> info@jogjafoodies.com</li>
-                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
-                </ul>
-            </div>
-            <div class="col-md-3 mb-4">
-                <h6>Jam Operasional</h6>
-                <ul class="list-unstyled">
-                    <li>Senin - Jumat: 09:00 - 21:00</li>
-                    <li>Sabtu - Minggu: 08:00 - 22:00</li>
-                </ul>
-            </div>
-        </div>
-        <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
-        <div class="text-center">
-            <p class="mb-0">&copy; 2024 Jogja Foodies. All rights reserved. Crafted with <i class="fas fa-heart text-danger"></i> for Jogja's culinary lovers</p>
-        </div>
-    </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

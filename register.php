@@ -1,7 +1,7 @@
 <?php
 // file: register.php
 session_start();
-require_once 'config/koneksi.php';  // Menggunakan koneksi.php (bukan database.php)
+require_once 'koneksi.php';  // Menggunakan koneksi.php (bukan database.php)
 
 // If already logged in, redirect to home
 if(isset($_SESSION['user_id'])) {
