@@ -1,7 +1,7 @@
 <?php
 // file: login.php
 session_start();
-require_once 'koneksi.php';  // Menggunakan koneksi.php
+require_once 'config/koneksi.php';  // Menggunakan koneksi.php
 
 // Jika sudah login, redirect ke index
 if(isset($_SESSION['user_id'])) {

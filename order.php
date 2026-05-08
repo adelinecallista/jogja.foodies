@@ -1,7 +1,7 @@
 <?php
 // file: order.php
 session_start();
-require_once 'koneksi.php';
+require_once 'config/koneksi.php';
 
 // Check if user is logged in
 if(!isset($_SESSION['user_id'])) {

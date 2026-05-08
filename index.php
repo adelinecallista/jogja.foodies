@@ -1,7 +1,7 @@
 <?php
 // file: index.php
 session_start();
-require_once 'koneksi.php';
+require_once 'config/koneksi.php';
 
 // Inisialisasi koneksi (sesuai modul)
 $konek = getKoneksi();

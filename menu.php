@@ -1,21 +1,25 @@
 <?php
 // file: menu.php
 session_start();
-require_once 'koneksi.php';
+require_once 'config/koneksi.php';
 
 $current_page = 'menu.php';
 
 // Get filter parameters
-$category = isset($_GET['category']) && $_GET['category'] != 'all' ? mysqli_real_escape_string($konek, $_GET['category']) : '';
-$search = isset($_GET['search']) ? mysqli_real_escape_string($konek, $_GET['search']) : '';
+$category = isset($_GET['category']) && $_GET['category'] !== 'all' 
+    ? mysqli_real_escape_string($konek, $_GET['category']) 
+    : '';
+$search = isset($_GET['search']) 
+    ? mysqli_real_escape_string($konek, $_GET['search']) 
+    : '';
 
 // Build query
 $query = "SELECT * FROM foods WHERE 1=1";
 
-if($category) {
+if ($category) {
     $query .= " AND category = '$category'";
 }
-if($search) {
+if ($search) {
     $query .= " AND (name LIKE '%$search%' OR description LIKE '%$search%' OR location LIKE '%$search%')";
 }
 $query .= " ORDER BY rating DESC, name ASC";
@@ -38,11 +42,19 @@ while ($row = mysqli_fetch_assoc($cat_result)) {
 function getFoodImage($food_name) {
     $clean_name = strtolower(str_replace(' ', '', $food_name));
     
-    if(strpos($clean_name, 'gudeg') !== false) return 'assets/gudeg.jpeg';
-    if(strpos($clean_name, 'bakpia') !== false) return 'assets/bakpia.jpeg';
-    if(strpos($clean_name, 'cendol') !== false) return 'assets/cendol.jpeg';
-    if(strpos($clean_name, 'thiwul') !== false) return 'assets/thiwul.jpeg';
-    if(strpos($clean_name, 'wedang') !== false) return 'assets/wedang.jpeg';
+    $images = [
+        'gudeg' => 'assets/gudeg.jpeg',
+        'bakpia' => 'assets/bakpia.jpeg',
+        'cendol' => 'assets/cendol.jpeg',
+        'thiwul' => 'assets/thiwul.jpeg',
+        'wedang' => 'assets/wedang.jpeg',
+    ];
+    
+    foreach ($images as $keyword => $path) {
+        if (strpos($clean_name, $keyword) !== false) {
+            return $path;
+        }
+    }
     
     return 'assets/gudeg.jpeg';
 }
@@ -58,6 +70,7 @@ function getFoodImage($food_name) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ========== RESET & BASE ========== */
         * {
             margin: 0;
             padding: 0;
@@ -70,6 +83,7 @@ function getFoodImage($food_name) {
             color: #2d3436;
         }
 
+        /* ========== NAVBAR ========== */
         .navbar {
             background: #ffffff;
             box-shadow: 0 2px 20px rgba(0,0,0,0.08);
@@ -114,6 +128,7 @@ function getFoodImage($food_name) {
             border-radius: 3px;
         }
 
+        /* ========== BUTTONS ========== */
         .btn-primary-custom {
             background: #FF6B35;
             border: none;
@@ -130,6 +145,28 @@ function getFoodImage($food_name) {
             color: white;
         }
 
+        .btn-order {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            border: none;
+            border-radius: 12px;
+            padding: 0.6rem;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        .btn-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,53,0.3);
+            color: white;
+        }
+
+        /* ========== PAGE HEADER ========== */
         .page-header {
             background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFD166 100%);
             padding: 80px 0 60px;
@@ -148,6 +185,7 @@ function getFoodImage($food_name) {
             opacity: 0.95;
         }
 
+        /* ========== FILTER SECTION ========== */
         .filter-section {
             background: white;
             padding: 1.5rem 0;
@@ -190,6 +228,7 @@ function getFoodImage($food_name) {
             box-shadow: 0 4px 12px rgba(255,107,53,0.3);
         }
 
+        /* ========== SEARCH BOX ========== */
         .search-box {
             position: relative;
         }
@@ -220,6 +259,7 @@ function getFoodImage($food_name) {
             font-weight: 500;
         }
 
+        /* ========== RESULT INFO ========== */
         .result-info {
             margin: 1.5rem 0;
             padding: 0.5rem 0;
@@ -231,6 +271,7 @@ function getFoodImage($food_name) {
             font-weight: 700;
         }
 
+        /* ========== FOOD CARD ========== */
         .food-card {
             background: white;
             border-radius: 20px;
@@ -315,27 +356,7 @@ function getFoodImage($food_name) {
             overflow: hidden;
         }
 
-        .btn-order {
-            display: inline-block;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
-            border: none;
-            border-radius: 12px;
-            padding: 0.6rem;
-            color: white;
-            font-weight: 600;
-            transition: all 0.3s;
-            width: 100%;
-            text-align: center;
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-
-        .btn-order:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255,107,53,0.3);
-            color: white;
-        }
-
+        /* ========== EMPTY STATE ========== */
         .empty-state {
             text-align: center;
             padding: 4rem;
@@ -349,6 +370,7 @@ function getFoodImage($food_name) {
             margin-bottom: 1rem;
         }
 
+        /* ========== FOOTER ========== */
         footer {
             background: #1e272e;
             color: #d2dae2;
@@ -390,6 +412,7 @@ function getFoodImage($food_name) {
             margin-right: 0.5rem;
         }
 
+        /* ========== RESPONSIVE ========== */
         @media (max-width: 768px) {
             .page-header h1 {
                 font-size: 2rem;
@@ -409,7 +432,7 @@ function getFoodImage($food_name) {
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- ========== NAVBAR ========== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
@@ -424,37 +447,49 @@ function getFoodImage($food_name) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold <?= ($current_page == 'index.php') ? 'active-red' : '' ?>" href="index.php">Home</a>
+                    <a class="nav-link fw-bold <?= ($current_page == 'index.php') ? 'active-red' : '' ?>" href="index.php">
+                        <i class="fas fa-home"></i> Home
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold" href="menu.php">Menu</a>
+                    <a class="nav-link fw-bold <?= ($current_page == 'menu.php') ? 'active-red' : '' ?>" href="menu.php">
+                        <i class="fas fa-utensils"></i> Menu
+                    </a>
                 </li>
             </ul>
         </div>
         
         <div class="d-flex align-items-center" style="gap: 10px;">
-            <i class="bi bi-search fs-5 cursor-pointer" style="cursor: pointer; color: #FF6B35;"></i>
-            
             <?php if(isset($_SESSION['user_id'])): ?>
                 <div class="dropdown d-inline-block">
-                    <button class="btn rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" style="background: #FF6B35; color: white; border: none;">
-                        <i class="fas fa-user-circle"></i> <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username']) ?>
+                    <button class="btn rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" 
+                            style="background: #FF6B35; color: white; border: none;">
+                        <i class="fas fa-user-circle"></i> 
+                        <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username']) ?>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="my_orders.php"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                        <li><a class="dropdown-item" href="my_orders.php">
+                            <i class="fas fa-shopping-bag"></i> My Orders
+                        </a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a class="dropdown-item text-danger" href="logout.php">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a></li>
                     </ul>
                 </div>
             <?php else: ?>
-                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #FF6B35; color: white;">Masuk</a>
-                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #FF6B35; color: #FF6B35;">Daftar</a>
+                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #FF6B35; color: white;">
+                    <i class="fas fa-sign-in-alt"></i> Masuk
+                </a>
+                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #FF6B35; color: #FF6B35;">
+                    <i class="fas fa-user-plus"></i> Daftar
+                </a>
             <?php endif; ?>
         </div>
     </div>
 </nav>
 
-<!-- Page Header -->
+<!-- ========== PAGE HEADER ========== -->
 <section class="page-header">
     <div class="container">
         <h1><i class="fas fa-utensils"></i> Menu Kuliner Jogja</h1>
@@ -462,30 +497,31 @@ function getFoodImage($food_name) {
     </div>
 </section>
 
-<!-- Filter Section -->
+<!-- ========== FILTER SECTION ========== -->
 <section class="filter-section">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <div class="filter-group">
-                    <a href="?category=all" class="filter-btn <?php echo (!isset($_GET['category']) || $_GET['category'] == 'all') ? 'active' : ''; ?>">
+                    <a href="?category=all" class="filter-btn <?= (!isset($_GET['category']) || $_GET['category'] == 'all') ? 'active' : '' ?>">
                         <i class="fas fa-th-large"></i> Semua
                     </a>
                     <?php foreach($categories as $cat): ?>
-                    <a href="?category=<?php echo urlencode($cat); ?>" 
-                       class="filter-btn <?php echo ($category == $cat) ? 'active' : ''; ?>">
-                        <i class="fas fa-tag"></i> <?php echo htmlspecialchars($cat); ?>
-                    </a>
+                        <a href="?category=<?= urlencode($cat) ?>" 
+                           class="filter-btn <?= ($category == $cat) ? 'active' : '' ?>">
+                            <i class="fas fa-tag"></i> <?= htmlspecialchars($cat) ?>
+                        </a>
                     <?php endforeach; ?>
                 </div>
             </div>
             <div class="col-lg-4">
                 <form method="GET" action="">
                     <?php if($category): ?>
-                        <input type="hidden" name="category" value="<?php echo htmlspecialchars($category); ?>">
+                        <input type="hidden" name="category" value="<?= htmlspecialchars($category) ?>">
                     <?php endif; ?>
                     <div class="search-box">
-                        <input type="text" name="search" class="form-control" placeholder="Cari makanan..." value="<?php echo htmlspecialchars($search); ?>">
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="Cari makanan..." value="<?= htmlspecialchars($search) ?>">
                         <button type="submit">
                             <i class="fas fa-search"></i> Cari
                         </button>
@@ -496,50 +532,54 @@ function getFoodImage($food_name) {
     </div>
 </section>
 
-<!-- Menu Grid -->
+<!-- ========== MENU GRID ========== -->
 <section class="container my-5">
     <div class="result-info">
-        <p><i class="fas fa-chart-line"></i> Menampilkan <span><?php echo count($foods); ?></span> menu kuliner</p>
+        <p><i class="fas fa-chart-line"></i> Menampilkan <span><?= count($foods) ?></span> menu kuliner</p>
     </div>
 
     <div class="row g-4">
         <?php if(count($foods) > 0): ?>
             <?php foreach($foods as $food): ?>
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <div class="food-card">
-                    <div class="card-img-wrapper">
-                        <img src="<?php echo getFoodImage($food['name']); ?>" alt="<?php echo htmlspecialchars($food['name']); ?>">
-                        <span class="category-badge"><?php echo htmlspecialchars($food['category']); ?></span>
-                    </div>
-                    <div class="p-4">
-                        <h5 class="fw-bold mb-2"><?php echo htmlspecialchars($food['name']); ?></h5>
-                        <div class="rating">
-                            <?php 
-                            $full = floor($food['rating']);
-                            for($i = 1; $i <= 5; $i++):
-                                if($i <= $full): ?>
-                                    <i class="fas fa-star"></i>
-                                <?php else: ?>
-                                    <i class="far fa-star"></i>
-                                <?php endif;
-                            endfor; ?>
-                            <span>(<?php echo number_format($food['rating'], 1); ?>)</span>
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="food-card">
+                        <div class="card-img-wrapper">
+                            <img src="<?= getFoodImage($food['name']) ?>" alt="<?= htmlspecialchars($food['name']) ?>">
+                            <span class="category-badge"><?= htmlspecialchars($food['category']) ?></span>
                         </div>
-                        <div class="location">
-                            <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($food['location']); ?>
-                        </div>
-                        <div class="food-description">
-                            <?php echo htmlspecialchars(substr($food['description'] ?? '', 0, 70)); ?>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <span class="price">Rp <?php echo number_format($food['price'], 0, ',', '.'); ?></span>
-                           <a href="order.php?id=<?php echo $food['id']; ?>" class="btn-order">
-    <i class="fas fa-shopping-cart"></i> Pesan
-</a>
+                        <div class="p-4">
+                            <h5 class="fw-bold mb-2"><?= htmlspecialchars($food['name']) ?></h5>
+                            
+                            <div class="rating">
+                                <?php 
+                                $full = floor($food['rating']);
+                                for($i = 1; $i <= 5; $i++): ?>
+                                    <?php if($i <= $full): ?>
+                                        <i class="fas fa-star"></i>
+                                    <?php else: ?>
+                                        <i class="far fa-star"></i>
+                                    <?php endif; ?>
+                                <?php endfor; ?>
+                                <span>(<?= number_format($food['rating'], 1) ?>)</span>
+                            </div>
+                            
+                            <div class="location">
+                                <i class="fas fa-map-marker-alt"></i> <?= htmlspecialchars($food['location']) ?>
+                            </div>
+                            
+                            <div class="food-description">
+                                <?= htmlspecialchars(substr($food['description'] ?? '', 0, 70)) ?>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="price">Rp <?= number_format($food['price'], 0, ',', '.') ?></span>
+                                <a href="order.php?id=<?= $food['id'] ?>" class="btn-order">
+                                    <i class="fas fa-shopping-cart"></i> Pesan
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             <?php endforeach; ?>
         <?php else: ?>
             <div class="col-12">
@@ -556,7 +596,7 @@ function getFoodImage($food_name) {
     </div>
 </section>
 
-<!-- Footer -->
+<!-- ========== FOOTER ========== -->
 <footer>
     <div class="container">
         <div class="row">
@@ -572,6 +612,7 @@ function getFoodImage($food_name) {
                     <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
+            
             <div class="col-md-2 mb-4">
                 <h6>Quick Links</h6>
                 <ul class="list-unstyled">
@@ -579,6 +620,7 @@ function getFoodImage($food_name) {
                     <li><a href="#">Contact</a></li>
                 </ul>
             </div>
+            
             <div class="col-md-3 mb-4">
                 <h6>Contact Info</h6>
                 <ul class="list-unstyled">
@@ -586,6 +628,7 @@ function getFoodImage($food_name) {
                     <li><i class="fas fa-envelope"></i> info@jogjafoodies.com</li>
                 </ul>
             </div>
+            
             <div class="col-md-3 mb-4">
                 <h6>Jam Operasional</h6>
                 <ul class="list-unstyled">
@@ -594,7 +637,9 @@ function getFoodImage($food_name) {
                 </ul>
             </div>
         </div>
+        
         <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+        
         <div class="text-center">
             <p>&copy; 2024 Jogja Foodies. All rights reserved.</p>
         </div>
