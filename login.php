@@ -71,7 +71,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFD166 100%);
+            background: #FFD1DC; /* Pastel pink background */
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -87,9 +87,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.15)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
             background-size: cover;
-            opacity: 0.2;
+            opacity: 0.15;
             pointer-events: none;
         }
 
@@ -100,10 +100,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             pointer-events: none;
         }
 
-        .icon-1 { top: 10%; left: 5%; animation: float 8s ease-in-out infinite; }
-        .icon-2 { bottom: 15%; right: 8%; animation: float 10s ease-in-out infinite reverse; }
-        .icon-3 { top: 50%; left: 3%; animation: float 12s ease-in-out infinite; }
-        .icon-4 { bottom: 30%; right: 5%; animation: float 7s ease-in-out infinite reverse; }
+        .icon-1 { top: 10%; left: 5%; animation: float 8s ease-in-out infinite; color: #F5A3B0; }
+        .icon-2 { bottom: 15%; right: 8%; animation: float 10s ease-in-out infinite reverse; color: #FFB7C5; }
+        .icon-3 { top: 50%; left: 3%; animation: float 12s ease-in-out infinite; color: #F5A3B0; }
+        .icon-4 { bottom: 30%; right: 5%; animation: float 7s ease-in-out infinite reverse; color: #FFB7C5; }
 
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
@@ -121,7 +121,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         .login-card {
             background: white;
             border-radius: 30px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 30px 60px rgba(245,163,176,0.25);
             overflow: hidden;
             transition: all 0.3s;
         }
@@ -136,13 +136,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         .logo-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            background: #F5A3B0;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
-            box-shadow: 0 10px 20px rgba(255,107,53,0.3);
+            box-shadow: 0 10px 20px rgba(245,163,176,0.4);
         }
 
         .logo-icon i {
@@ -153,12 +153,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         .card-header h3 {
             font-size: 1.8rem;
             font-weight: 800;
-            color: #2d3436;
+            color: #6B4E5E;
             margin-bottom: 0.5rem;
         }
 
         .card-header p {
-            color: #636e72;
+            color: #A58E98;
             font-size: 0.9rem;
         }
 
@@ -173,7 +173,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .form-group label {
             font-weight: 600;
-            color: #2d3436;
+            color: #6B4E5E;
             margin-bottom: 0.5rem;
             display: block;
             font-size: 0.9rem;
@@ -183,23 +183,23 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             position: absolute;
             left: 15px;
             top: 42px;
-            color: #FF6B35;
+            color: #F5A3B0;
             font-size: 1rem;
         }
 
         .form-control {
             border-radius: 15px;
             padding: 0.9rem 1rem 0.9rem 2.8rem;
-            border: 2px solid #e9ecef;
-            background: #f8f9fa;
+            border: 2px solid #FFE2E8;
+            background: #FFF9FB;
             font-size: 0.95rem;
             transition: all 0.3s;
         }
 
         .form-control:focus {
-            border-color: #FF6B35;
+            border-color: #F5A3B0;
             background: white;
-            box-shadow: 0 0 0 4px rgba(255,107,53,0.1);
+            box-shadow: 0 0 0 4px rgba(245,163,176,0.15);
         }
 
         .options-row {
@@ -215,18 +215,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             gap: 0.5rem;
             cursor: pointer;
             font-size: 0.85rem;
-            color: #636e72;
+            color: #A58E98;
         }
 
         .checkbox-label input {
             width: 16px;
             height: 16px;
             cursor: pointer;
-            accent-color: #FF6B35;
+            accent-color: #F5A3B0;
         }
 
         .forgot-link {
-            color: #FF6B35;
+            color: #F5A3B0;
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 500;
@@ -234,12 +234,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .forgot-link:hover {
-            color: #e55a2b;
+            color: #E8919F;
             text-decoration: underline;
         }
 
         .btn-login {
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            background: #F5A3B0;
             border: none;
             border-radius: 15px;
             padding: 0.9rem;
@@ -253,8 +253,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .btn-login:hover {
+            background: #E8919F;
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255,107,53,0.3);
+            box-shadow: 0 10px 25px rgba(245,163,176,0.4);
         }
 
         .divider {
@@ -268,12 +269,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         .divider::after {
             content: '';
             flex: 1;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 1px solid #FFE2E8;
         }
 
         .divider span {
             padding: 0 1rem;
-            color: #b2bec3;
+            color: #C5B1BA;
             font-size: 0.8rem;
         }
 
@@ -287,7 +288,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             flex: 1;
             padding: 0.7rem;
             border-radius: 12px;
-            border: 2px solid #e9ecef;
+            border: 2px solid #FFE2E8;
             background: white;
             transition: all 0.3s;
             font-weight: 500;
@@ -296,52 +297,51 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             justify-content: center;
             gap: 0.5rem;
             cursor: pointer;
+            color: #6B4E5E;
         }
 
         .social-btn:hover {
-            border-color: #FF6B35;
+            border-color: #F5A3B0;
             transform: translateY(-2px);
+            background: #FFF9FB;
         }
 
-        .social-btn i {
-            font-size: 1.2rem;
-        }
-
-        .social-btn.google i { color: #DB4437; }
-        .social-btn.facebook i { color: #4267B2; }
+        .social-btn.google i { color: #F5A3B0; }
+        .social-btn.facebook i { color: #F5A3B0; }
 
         .register-link {
             text-align: center;
             margin-top: 1.5rem;
             padding-top: 1rem;
-            border-top: 1px solid #e9ecef;
+            border-top: 1px solid #FFE2E8;
         }
 
         .register-link p {
-            color: #636e72;
+            color: #A58E98;
             font-size: 0.9rem;
         }
 
         .register-link a {
-            color: #FF6B35;
+            color: #F5A3B0;
             text-decoration: none;
             font-weight: 700;
             transition: all 0.3s;
         }
 
         .register-link a:hover {
+            color: #E8919F;
             text-decoration: underline;
         }
 
         .alert-custom {
             border-radius: 15px;
             border: none;
-            background: #fff5f0;
-            color: #FF6B35;
+            background: #FFF5F7;
+            color: #F5A3B0;
             font-size: 0.85rem;
             padding: 0.8rem 1rem;
             margin-bottom: 1.5rem;
-            border-left: 4px solid #FF6B35;
+            border-left: 4px solid #F5A3B0;
         }
 
         .alert-custom i {
@@ -384,23 +384,23 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
 <div class="floating-icon icon-1">
-    <i class="fas fa-utensils"></i>
+    <i class="fas fa-heart"></i>
 </div>
 <div class="floating-icon icon-2">
-    <i class="fas fa-mug-hot"></i>
+    <i class="fas fa-crown"></i>
 </div>
 <div class="floating-icon icon-3">
-    <i class="fas fa-drumstick-bite"></i>
+    <i class="fas fa-star"></i>
 </div>
 <div class="floating-icon icon-4">
-    <i class="fas fa-coffee"></i>
+    <i class="fas fa-gem"></i>
 </div>
 
 <div class="login-wrapper">
     <div class="login-card">
         <div class="card-header">
             <div class="logo-icon">
-                <i class="fas fa-utensils"></i>
+                <i class="fas fa-heart"></i>
             </div>
             <h3>Welcome Back!</h3>
             <p>Masuk ke akun Jogja Foodies Anda</p>
@@ -414,7 +414,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php endif; ?>
             
             <?php if(isset($_GET['registered']) && $_GET['registered'] == 'success'): ?>
-            <div class="alert-custom" style="background: #e8f8f5; color: #00b894; border-left-color: #00b894;">
+            <div class="alert-custom" style="background: #FCE4EC; color: #F5A3B0; border-left-color: #F5A3B0;">
                 <i class="fas fa-check-circle"></i> Pendaftaran berhasil! Silakan login.
             </div>
             <?php endif; ?>
@@ -448,12 +448,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <span>atau login dengan</span>
             </div>
             
+ 
             <div class="social-login">
-                <button class="social-btn google" onclick="alert('Login dengan Google akan segera hadir!')">
-                    <i class="fab fa-google"></i> Google
-                </button>
-                <button class="social-btn facebook" onclick="alert('Login dengan Facebook akan segera hadir!')">
-                    <i class="fab fa-facebook-f"></i> Facebook
+                <button class="social-btn" onclick="alert('Login dengan Google akan segera hadir!')">
+                    <i class="fab fa-google"></i> Login dengan Google
                 </button>
             </div>
             

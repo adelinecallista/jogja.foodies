@@ -1,63 +1,3 @@
-<?php
-// file: index.php
-session_start();
-require_once 'config/koneksi.php';
-
-// Inisialisasi koneksi (sesuai modul)
-$konek = getKoneksi();
-
-// Get popular foods from database (ambil 6 makanan untuk featured)
-$query = "SELECT id, name, description, price, category, location, rating FROM foods ORDER BY rating DESC LIMIT 6";
-$result = mysqli_query($konek, $query);
-$popular_foods = [];
-while ($row = mysqli_fetch_assoc($result)) {
-    $popular_foods[] = $row;
-}
-
-// Get top 3 rated foods
-$top_query = "SELECT id, name, description, location, rating FROM foods ORDER BY rating DESC LIMIT 3";
-$top_result = mysqli_query($konek, $top_query);
-$top_foods = [];
-while ($row = mysqli_fetch_assoc($top_result)) {
-    $top_foods[] = $row;
-}
-
-// Get stats from database
-$stats_query = "SELECT 
-    (SELECT COUNT(*) FROM foods) as total_foods,
-    (SELECT COUNT(*) FROM users) as total_users,
-    (SELECT AVG(rating) FROM foods) as avg_rating";
-$stats_result = mysqli_query($konek, $stats_query);
-$stats = mysqli_fetch_assoc($stats_result);
-
-// Set default values jika NULL
-if (!$stats['total_foods']) $stats['total_foods'] = 0;
-if (!$stats['total_users']) $stats['total_users'] = 0;
-if (!$stats['avg_rating']) $stats['avg_rating'] = 0;
-
-$current_page = basename($_SERVER['PHP_SELF']);
-
-// Fungsi untuk mendapatkan path gambar (sederhana)
-function getFoodImage($food_name) {
-    $clean_name = strtolower(str_replace(' ', '', $food_name));
-    
-    $image_map = [
-        'bakpia' => 'assets/bakpia.jpeg',
-        'cendol' => 'assets/cendol.jpeg',
-        'gudeg' => 'assets/gudeg.jpeg',
-        'thiwul' => 'assets/thiwul.jpeg',
-        'wedang' => 'assets/wedang.jpeg',
-    ];
-    
-    foreach($image_map as $key => $image) {
-        if(strpos($clean_name, $key) !== false) {
-            return $image;
-        }
-    }
-    return 'assets/gudeg.jpeg';
-}
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -69,7 +9,6 @@ function getFoodImage($food_name) {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        /* Sama seperti CSS Anda sebelumnya, saya pertahankan */
         * {
             margin: 0;
             padding: 0;
@@ -78,39 +17,61 @@ function getFoodImage($food_name) {
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f8f9fa;
-            color: #2d3436;
+            background: #FFF5F7;  /* soft pastel pink background */
+            color: #4A4A4A;
+        }
+
+        /* Pastel Pink Color Palette */
+        :root {
+            --pastel-pink: #FFB7C5;
+            --pastel-pink-dark: #F5A3B0;
+            --pastel-mauve: #E8D1E0;
+            --pastel-blush: #FFD1DC;
+            --pastel-rose: #F7CAC9;
+            --pastel-lavender: #E6E6FA;
+            --text-soft: #5A5A6E;
+            --white-soft: #FFF9FB;
         }
 
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 1rem 0;
+            background: #FFFFFF;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+            padding: 0.8rem 0;
         }
 
         .navbar-brand {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
-            color: #FF6B35 !important;
+            color: #F5A3B0 !important;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .navbar-brand img {
+            height: 45px;
+            width: auto;
+            border-radius: 12px;
+            object-fit: cover;
         }
 
         .navbar-brand i {
-            color: #FF6B35;
+            color: #F5A3B0;
         }
 
         .nav-link {
-            color: #2d3436 !important;
+            color: #5A5A6E !important;
             font-weight: 500;
             margin: 0 1rem;
             transition: all 0.3s;
         }
 
         .nav-link:hover {
-            color: #FF6B35 !important;
+            color: #F5A3B0 !important;
         }
 
         .nav-link.active-red {
-            color: #FF6B35 !important;
+            color: #F5A3B0 !important;
             font-weight: 600;
             position: relative;
         }
@@ -122,27 +83,27 @@ function getFoodImage($food_name) {
             left: 0;
             width: 100%;
             height: 3px;
-            background: #FF6B35;
+            background: #F5A3B0;
             border-radius: 3px;
         }
 
         .btn-outline-dark {
             border-radius: 50px;
             padding: 0.5rem 1.8rem;
-            border: 2px solid #FF6B35;
-            color: #FF6B35;
+            border: 2px solid #FFB7C5;
+            color: #F5A3B0;
             background: transparent;
             transition: all 0.3s;
         }
 
         .btn-outline-dark:hover {
-            background: #FF6B35;
-            border-color: #FF6B35;
+            background: #FFB7C5;
+            border-color: #FFB7C5;
             color: white;
         }
 
         .btn-primary-custom {
-            background: #FF6B35;
+            background: #F5A3B0;
             border: none;
             padding: 0.5rem 1.8rem;
             border-radius: 50px;
@@ -152,7 +113,7 @@ function getFoodImage($food_name) {
         }
 
         .btn-primary-custom:hover {
-            background: #e55a2b;
+            background: #E8919F;
             transform: translateY(-2px);
             color: white;
         }
@@ -161,8 +122,9 @@ function getFoodImage($food_name) {
             cursor: pointer;
         }
 
+        /* Hero Section - Solid Pastel Pink (No gradient) */
         .hero {
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFD166 100%);
+            background: #FFD1DC;  /* solid pastel blush */
             min-height: 90vh;
             display: flex;
             align-items: center;
@@ -177,15 +139,15 @@ function getFoodImage($food_name) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,245,247,0.4)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
             background-size: cover;
-            opacity: 0.3;
+            opacity: 0.2;
         }
 
         .hero-content {
             position: relative;
             z-index: 2;
-            color: white;
+            color: #5A4A4F;
         }
 
         .hero h1 {
@@ -193,17 +155,19 @@ function getFoodImage($food_name) {
             font-weight: 800;
             margin-bottom: 1.5rem;
             line-height: 1.2;
+            color: #6B4E5E;
         }
 
         .hero p {
             font-size: 1.2rem;
             margin-bottom: 2rem;
-            opacity: 0.95;
+            opacity: 0.9;
+            color: #6B4E5E;
         }
 
         .btn-hero-primary {
-            background: white;
-            color: #FF6B35;
+            background: #FFFFFF;
+            color: #F5A3B0;
             padding: 1rem 2.5rem;
             border-radius: 50px;
             font-weight: 600;
@@ -212,17 +176,18 @@ function getFoodImage($food_name) {
             border: none;
             text-decoration: none;
             display: inline-block;
+            box-shadow: 0 4px 12px rgba(245,163,176,0.2);
         }
 
         .btn-hero-primary:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            color: #FF6B35;
+            box-shadow: 0 10px 25px rgba(245,163,176,0.3);
+            color: #E8919F;
         }
 
         .btn-hero-outline {
             background: transparent;
-            border: 2px solid white;
+            border: 2px solid #FFFFFF;
             color: white;
             padding: 1rem 2.5rem;
             border-radius: 50px;
@@ -234,40 +199,42 @@ function getFoodImage($food_name) {
 
         .btn-hero-outline:hover {
             background: white;
-            color: #FF6B35;
+            color: #F5A3B0;
             transform: translateY(-3px);
         }
 
         .stats-section {
-            background: white;
+            background: #FFFFFF;
             padding: 4rem 0;
             margin-top: -50px;
             position: relative;
             z-index: 10;
+            border-radius: 40px 40px 0 0;
         }
 
         .stat-card {
             text-align: center;
             padding: 2rem;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            background: #FFF9FB;
+            border-radius: 28px;
+            box-shadow: 0 8px 24px rgba(245,163,176,0.08);
             transition: all 0.3s;
+            border: 1px solid #FFE2E8;
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            box-shadow: 0 15px 35px rgba(245,163,176,0.15);
         }
 
         .stat-number {
             font-size: 2.5rem;
             font-weight: 800;
-            color: #FF6B35;
+            color: #F5A3B0;
         }
 
         .stat-label {
-            color: #636e72;
+            color: #8A7A82;
             font-weight: 500;
             margin-top: 0.5rem;
         }
@@ -277,34 +244,36 @@ function getFoodImage($food_name) {
             font-weight: 700;
             margin-bottom: 1rem;
             text-align: center;
-            color: #2d3436;
+            color: #6B4E5E;
         }
 
         .section-subtitle {
             text-align: center;
-            color: #636e72;
+            color: #A58E98;
             margin-bottom: 3rem;
         }
 
+        /* Top Rated Section - Pastel Mauve solid (no gradient) */
         .top-rated-section {
-            background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
+            background: #FDF2F5;  /* solid pastel pinkish white */
             padding: 5rem 0;
             margin: 3rem 0;
         }
 
         .top-card {
-            background: white;
-            border-radius: 20px;
+            background: #FFFFFF;
+            border-radius: 28px;
             padding: 2rem;
             text-align: center;
             transition: all 0.3s;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(245,163,176,0.08);
             height: 100%;
+            border: 1px solid #FFE2E8;
         }
 
         .top-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(255,107,53,0.15);
+            box-shadow: 0 15px 35px rgba(245,163,176,0.2);
         }
 
         .rank {
@@ -319,52 +288,53 @@ function getFoodImage($food_name) {
         }
 
         .rank-1 {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: white;
+            background: #FFD1DC;
+            color: #F5A3B0;
         }
 
         .rank-2 {
-            background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
-            color: white;
+            background: #F0E2E8;
+            color: #CDA2B0;
         }
 
         .rank-3 {
-            background: linear-gradient(135deg, #CD7F32, #B87333);
-            color: white;
+            background: #EBD8E0;
+            color: #C28B9A;
         }
 
         .rating {
-            color: #fdcb6e;
+            color: #F4C2C2;
             margin-bottom: 0.5rem;
             font-size: 0.85rem;
         }
 
         .rating span {
-            color: #636e72;
+            color: #A58E98;
             margin-left: 0.5rem;
         }
 
         .location {
-            color: #636e72;
+            color: #A58E98;
             font-size: 0.75rem;
             margin-bottom: 0.5rem;
         }
 
         .location i {
-            color: #FF6B35;
+            color: #F5A3B0;
             margin-right: 0.3rem;
         }
 
+        /* CTA Section - solid pastel pink (no gradient) */
         .cta-section {
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            background: #FFD1DC;  /* solid pastel blush */
             padding: 5rem 0;
             border-radius: 0;
-            color: white;
+            color: #6B4E5E;
         }
 
         .btn-cta {
             background: white;
-            color: #FF6B35;
+            color: #F5A3B0;
             padding: 0.8rem 2rem;
             border-radius: 50px;
             font-weight: 600;
@@ -376,38 +346,47 @@ function getFoodImage($food_name) {
 
         .btn-cta:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            color: #FF6B35;
+            box-shadow: 0 10px 25px rgba(255,209,220,0.4);
+            color: #E8919F;
         }
 
         footer {
-            background: #1e272e;
-            color: #d2dae2;
+            background: #F8E9EE;  /* soft pastel pink footer */
+            color: #7A5C68;
             padding: 4rem 0 2rem;
+            border-top: 1px solid #FFE2E8;
         }
 
         .footer-brand {
             font-size: 1.8rem;
             font-weight: 800;
-            color: #FF6B35;
+            color: #F5A3B0;
             margin-bottom: 1rem;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand img {
+            height: 40px;
+            width: auto;
+            border-radius: 10px;
         }
 
         footer h6 {
-            color: white;
+            color: #6B4E5E;
             font-weight: 600;
             margin-bottom: 1.5rem;
         }
 
         footer a {
-            color: #d2dae2;
+            color: #8A6F7A;
             text-decoration: none;
             transition: all 0.3s;
         }
 
         footer a:hover {
-            color: #FF6B35;
+            color: #F5A3B0;
         }
 
         .social-icons a {
@@ -416,14 +395,16 @@ function getFoodImage($food_name) {
             height: 35px;
             line-height: 35px;
             text-align: center;
-            background: rgba(255,255,255,0.1);
+            background: #FFE2E8;
             border-radius: 50%;
             margin-right: 0.5rem;
             transition: all 0.3s;
+            color: #F5A3B0;
         }
 
         .social-icons a:hover {
-            background: #FF6B35;
+            background: #F5A3B0;
+            color: white;
             transform: translateY(-3px);
         }
 
@@ -447,17 +428,39 @@ function getFoodImage($food_name) {
             .stats-section {
                 margin-top: 0;
             }
+
+            .navbar-brand img {
+                height: 35px;
+            }
+
+            .footer-brand img {
+                height: 32px;
+            }
+        }
+
+        /* Logo fallback styling jika gambar tidak ditemukan */
+        .logo-placeholder {
+            background: #F5A3B0;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
         }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- Navbar dengan Logo Gambar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <i class="fas fa-utensils fs-3 me-2" style="color: #FF6B35;"></i>
-            <span class="fw-bold fs-4" style="color: #FF6B35;">Jogja Foodies</span>
+            <!-- Logo menggunakan file logo.jpeg -->
+            <img src="logo.jpeg" alt="Jogja Foodies Logo" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23F5A3B0%22/%3E%3Ctext x=%2250%22 y=%2267%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2250%22 font-weight=%22bold%22%3E🍴%3C/text%3E%3C/svg%3E';">
+            <span class="fw-bold fs-4" style="color: #F5A3B0;">Jogja Foodies</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -467,7 +470,7 @@ function getFoodImage($food_name) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold <?= ($current_page == 'index.php') ? 'active-red' : '' ?>" href="index.php">Home</a>
+                    <a class="nav-link fw-bold active-red" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-bold" href="menu.php">Menu</a>
@@ -476,176 +479,113 @@ function getFoodImage($food_name) {
         </div>
         
         <div class="d-flex align-items-center" style="gap: 10px;">
-            <i class="bi bi-search fs-5 cursor-pointer" style="cursor: pointer; color: #FF6B35;"></i>
+            <i class="bi bi-search fs-5 cursor-pointer" style="cursor: pointer; color: #F5A3B0;"></i>
             
-            <?php if(isset($_SESSION['user_id'])): ?>
-                <div class="dropdown d-inline-block">
-                    <button class="btn rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" style="background: #FF6B35; color: white; border: none;">
-                        <i class="fas fa-user-circle"></i> <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username']) ?>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="my_orders.php"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </div>
-            <?php else: ?>
-                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #FF6B35; color: white;">Masuk</a>
-                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #FF6B35; color: #FF6B35;">Daftar</a>
-            <?php endif; ?>
+            <!-- Simulasi guest (karena tidak ada session di frontend static) -->
+            <div class="dropdown d-inline-block">
+                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #F5A3B0; color: white; border: none;">Masuk</a>
+                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #F5A3B0; color: #F5A3B0;">Daftar</a>
+            </div>
         </div>
     </div>
 </nav>
 
-<!-- Hero Section -->
 <section class="hero">
     <div class="container hero-content">
-        <div class="row">
-            <div class="col-lg-7">
-                <h1>Discover Authentic <br>Yogyakarta Cuisine</h1>
-                <p class="lead">Explore the rich flavors of Jogja's culinary heritage. From legendary Gudeg to hidden gem Angkringan, find your next favorite dish with Jogja Foodies.</p>
-                <div>
-                    <a href="menu.php" class="btn-hero-primary">
-                        Explore Menu <i class="fas fa-arrow-right"></i>
-                    </a>
-                    <a href="#" class="btn-hero-outline">
-                        Watch Story <i class="fas fa-play"></i>
-                    </a>
-                </div>
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1>Temukan makanan favoritmu!</h1>
+                <p class="lead">
+                    Jogja Foodies adalah platform kuliner digital yang dirancang khusus untuk membantu para pecinta makanan menemukan cita rasa autentik Yogyakarta. Website ini menyajikan berbagai rekomendasi makanan khas Jogja mulai dari gudeg legendaris, bakpia, sate klathak, hingga wedang uwuh, lengkap dengan informasi rating, lokasi, harga, dan deskripsi singkat. Dengan tampilan yang simpel dan warna pastel yang menenangkan, Jogja Foodies mengajak Anda menjelajahi kuliner Jogja dengan mudah, cepat, dan menyenangkan. Temukan makanan favoritmu dan mulai petualangan kuliner Jogja sekarang juga!
+                </p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Stats Section -->
-<section class="stats-section">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number"><?php echo number_format($stats['total_foods']); ?>+</div>
-                    <div class="stat-label">Food Vendors</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number"><?php echo number_format($stats['total_users']); ?>+</div>
-                    <div class="stat-label">Happy Foodies</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number"><?php echo number_format($stats['total_foods']); ?>+</div>
-                    <div class="stat-label">Authentic Dishes</div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-number"><?php echo number_format($stats['avg_rating'], 1); ?></div>
-                    <div class="stat-label">Rating Average</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Top Rated Section -->
+<!-- Top Rated Section - Data makanan khas Jogja dengan warna pastel -->
 <section class="top-rated-section">
     <div class="container">
-        <h2 class="section-title">⭐ Top Rated <span style="color: #FF6B35;">Dishes</span></h2>
+        <h2 class="section-title"> Top Rated <span style="color: #F5A3B0;">Dishes</span></h2>
         <p class="section-subtitle">Highest rated foods by our foodies community</p>
         
         <div class="row g-4">
-            <?php if(count($top_foods) >= 1): ?>
-                <?php 
-                $ranks = ['rank-1', 'rank-2', 'rank-3'];
-                $icons = ['fa-crown', 'fa-medal', 'fa-award'];
-                foreach($top_foods as $index => $food): 
-                ?>
-                <div class="col-md-4">
-                    <div class="top-card">
-                        <div class="rank <?php echo $ranks[$index]; ?>">
-                            <i class="fas <?php echo $icons[$index]; ?>"></i>
-                        </div>
-                        <h4 class="fw-bold mt-3"><?php echo htmlspecialchars($food['name']); ?></h4>
-                        <div class="rating mb-2">
-                            <?php 
-                            $full = floor($food['rating']);
-                            $half = ($food['rating'] - $full) >= 0.5;
-                            for($i = 1; $i <= 5; $i++):
-                                if($i <= $full): ?>
-                                    <i class="fas fa-star"></i>
-                                <?php elseif($half && $i == $full + 1): ?>
-                                    <i class="fas fa-star-half-alt"></i>
-                                <?php else: ?>
-                                    <i class="far fa-star"></i>
-                                <?php endif;
-                            endfor; ?>
-                            <span>(<?php echo number_format($food['rating'], 1); ?>)</span>
-                        </div>
-                        <p class="text-muted"><?php echo htmlspecialchars(substr($food['description'] ?? '', 0, 50)); ?></p>
-                        <div class="location">
-                            <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($food['location']); ?>
-                        </div>
+            <div class="col-md-4">
+                <div class="top-card">
+                    <div class="rank rank-1">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <h4 class="fw-bold mt-3">Gudeg </h4>
+                    <div class="rating mb-2">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        <span>(4.9)</span>
+                    </div>
+                    <p class="text-muted">Nangka muda dimasak dengan santan kental, gula aren, dan rempah khas - manis legit legendaris.</p>
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i> Kawasan Wijilan, Yogyakarta
                     </div>
                 </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="col-12 text-center">
-                    <div class="alert alert-info">Belum ada data rating. Silakan tambahkan data ke database.</div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="top-card">
+                    <div class="rank rank-3">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h4 class="fw-bold mt-3">Ayam Bakar Artomoro</h4>
+                    <div class="rating mb-2">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        <span>(4.9)</span>
+                    </div>
+                    <p class="text-muted">kuliner legendaris di Yogyakarta yang terkenal dengan ayam kampung pedas manis berukuran besar, bumbu meresap hingga ke tulang, dan proses masak 5 jam.</p>
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i> Jl. Palagan Tentara Pelajar Km.7,8 No.30s, Karang Moko, Sariharjo, Sleman, Yogyakarta.
+                    </div>
                 </div>
-            <?php endif; ?>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="top-card">
+                    <div class="rank rank-2">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h4 class="fw-bold mt-3">Bakpia </h4>
+                    <div class="rating mb-2">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i>
+                        <span>(4.8)</span>
+                    </div>
+                    <p class="text-muted">Kue khas berbentuk bulat pipih dengan isian kacang hijau manis, tekstur lembut dan legit.</p>
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i> Jalan Pathuk, Jogja
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </div>
+
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h2 class="fw-bold mb-3">Ready to Explore Jogja's Culinary?</h2>
-                <p class="lead mb-0">Join thousands of foodies who discover authentic flavors every day</p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <a href="register.php" class="btn-cta">
-                    Join Now <i class="fas fa-user-plus"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<!-- CTA Section - Solid pastel pink (tanpa gradasi) -->
 
-<!-- Footer -->
+<!-- Footer dengan Logo Gambar juga -->
 <footer>
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="footer-brand">
-                    <i class="fas fa-utensils"></i> Jogja Foodies
+                    <img src="logo.jpeg" alt="Jogja Foodies Logo">
+                    Jogja Foodies
                 </div>
-                <p>Discover the authentic taste of Yogyakarta through our curated culinary platform.</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="col-md-2 mb-4">
-                <h6>Quick Links</h6>
-                <ul class="list-unstyled">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                </ul>
+                <p>Temukan makanan favoritmu!</p>
             </div>
             <div class="col-md-3 mb-4">
                 <h6>Contact Info</h6>
                 <ul class="list-unstyled">
                     <li><i class="fas fa-map-marker-alt"></i> Yogyakarta, Indonesia</li>
-                    <li><i class="fas fa-envelope"></i> info@jogjafoodies.com</li>
+                    <li><i class="fas fa-envelope"></i> jogjafoodies@gmail.com</li>
                     <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
                 </ul>
             </div>
@@ -657,9 +597,9 @@ function getFoodImage($food_name) {
                 </ul>
             </div>
         </div>
-        <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+        <hr class="my-4" style="border-color: rgba(245,163,176,0.2);">
         <div class="text-center">
-            <p class="mb-0">&copy; 2024 Jogja Foodies. All rights reserved. Crafted with <i class="fas fa-heart text-danger"></i> for Jogja's culinary lovers</p>
+            <p class="mb-0">&copy; 2026 Jogja Foodies</p>
         </div>
     </div>
 </footer>

@@ -47,7 +47,9 @@ function getFoodImage($food_name) {
         'bakpia' => 'assets/bakpia.jpeg',
         'cendol' => 'assets/cendol.jpeg',
         'thiwul' => 'assets/thiwul.jpeg',
-        'wedang' => 'assets/wedang.jpeg',
+        'ronde' => 'assets/ronde.jpeg',
+        'sate' => 'assets/sate.jpg',
+        'ayam' => 'assets/ayam.jpeg',
     ];
     
     foreach ($images as $keyword => $path) {
@@ -56,7 +58,7 @@ function getFoodImage($food_name) {
         }
     }
     
-    return 'assets/gudeg.jpeg';
+    return 'assets/WedangUwuh.jpeg';
 }
 ?>
 
@@ -69,8 +71,8 @@ function getFoodImage($food_name) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        /* ========== RESET & BASE ========== */
         * {
             margin: 0;
             padding: 0;
@@ -79,40 +81,56 @@ function getFoodImage($food_name) {
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f8f9fa;
-            color: #2d3436;
+            background: #FFF5F7;
+            color: #4A4A4A;
         }
 
-        /* ========== NAVBAR ========== */
+        :root {
+            --pastel-pink: #FFB7C5;
+            --pastel-pink-dark: #F5A3B0;
+            --pastel-mauve: #E8D1E0;
+            --pastel-blush: #FFD1DC;
+            --pastel-rose: #F7CAC9;
+            --pastel-lavender: #E6E6FA;
+            --text-soft: #5A5A6E;
+            --white-soft: #FFF9FB;
+        }
+
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 1rem 0;
+            background: #FFFFFF;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+            padding: 0.8rem 0;
         }
 
         .navbar-brand {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
-            color: #FF6B35 !important;
+            color: #F5A3B0 !important;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .navbar-brand i {
-            color: #FF6B35;
+        .navbar-brand img {
+            height: 45px;
+            width: auto;
+            border-radius: 12px;
+            object-fit: cover;
         }
 
         .nav-link {
-            color: #2d3436 !important;
+            color: #5A5A6E !important;
             font-weight: 500;
             margin: 0 1rem;
             transition: all 0.3s;
         }
 
         .nav-link:hover {
-            color: #FF6B35 !important;
+            color: #F5A3B0 !important;
         }
 
         .nav-link.active-red {
-            color: #FF6B35 !important;
+            color: #F5A3B0 !important;
             font-weight: 600;
             position: relative;
         }
@@ -124,13 +142,12 @@ function getFoodImage($food_name) {
             left: 0;
             width: 100%;
             height: 3px;
-            background: #FF6B35;
+            background: #F5A3B0;
             border-radius: 3px;
         }
 
-        /* ========== BUTTONS ========== */
         .btn-primary-custom {
-            background: #FF6B35;
+            background: #F5A3B0;
             border: none;
             padding: 0.5rem 1.8rem;
             border-radius: 50px;
@@ -140,14 +157,14 @@ function getFoodImage($food_name) {
         }
 
         .btn-primary-custom:hover {
-            background: #e55a2b;
+            background: #E8919F;
             transform: translateY(-2px);
             color: white;
         }
 
         .btn-order {
             display: inline-block;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            background: #F5A3B0;
             border: none;
             border-radius: 12px;
             padding: 0.6rem;
@@ -161,16 +178,16 @@ function getFoodImage($food_name) {
         }
 
         .btn-order:hover {
+            background: #E8919F;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255,107,53,0.3);
+            box-shadow: 0 5px 15px rgba(245,163,176,0.3);
             color: white;
         }
 
-        /* ========== PAGE HEADER ========== */
         .page-header {
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFD166 100%);
+            background: #FFD1DC;
             padding: 80px 0 60px;
-            color: white;
+            color: #6B4E5E;
             text-align: center;
         }
 
@@ -178,14 +195,15 @@ function getFoodImage($food_name) {
             font-size: 3rem;
             font-weight: 800;
             margin-bottom: 1rem;
+            color: #6B4E5E;
         }
 
         .page-header p {
             font-size: 1.1rem;
-            opacity: 0.95;
+            opacity: 0.9;
+            color: #7A5C68;
         }
 
-        /* ========== FILTER SECTION ========== */
         .filter-section {
             background: white;
             padding: 1.5rem 0;
@@ -204,31 +222,28 @@ function getFoodImage($food_name) {
         .filter-btn {
             padding: 0.6rem 1.5rem;
             border-radius: 50px;
-            background: #f8f9fa;
-            color: #2d3436;
+            background: #FFF9FB;
+            color: #8A7A82;
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s;
-            border: 2px solid transparent;
+            border: 2px solid #FFE2E8;
             font-size: 0.9rem;
         }
 
-        .filter-btn i {
-            margin-right: 0.5rem;
-        }
-
         .filter-btn:hover {
-            background: #FF6B35;
+            background: #F5A3B0;
             color: white;
+            border-color: #F5A3B0;
         }
 
         .filter-btn.active {
-            background: #FF6B35;
+            background: #F5A3B0;
             color: white;
-            box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+            border-color: #F5A3B0;
+            box-shadow: 0 4px 12px rgba(245,163,176,0.3);
         }
 
-        /* ========== SEARCH BOX ========== */
         .search-box {
             position: relative;
         }
@@ -236,14 +251,14 @@ function getFoodImage($food_name) {
         .search-box input {
             border-radius: 50px;
             padding: 0.7rem 1.2rem;
-            border: 2px solid #e9ecef;
-            background: #f8f9fa;
+            border: 2px solid #FFE2E8;
+            background: #FFF9FB;
             font-size: 0.9rem;
             width: 100%;
         }
 
         .search-box input:focus {
-            border-color: #FF6B35;
+            border-color: #F5A3B0;
             outline: none;
         }
 
@@ -251,7 +266,7 @@ function getFoodImage($food_name) {
             position: absolute;
             right: 5px;
             top: 5px;
-            background: #FF6B35;
+            background: #F5A3B0;
             border: none;
             border-radius: 50px;
             padding: 0.4rem 1.2rem;
@@ -259,19 +274,21 @@ function getFoodImage($food_name) {
             font-weight: 500;
         }
 
-        /* ========== RESULT INFO ========== */
+        .search-box button:hover {
+            background: #E8919F;
+        }
+
         .result-info {
             margin: 1.5rem 0;
             padding: 0.5rem 0;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid #FFE2E8;
         }
 
         .result-info span {
-            color: #FF6B35;
+            color: #F5A3B0;
             font-weight: 700;
         }
 
-        /* ========== FOOD CARD ========== */
         .food-card {
             background: white;
             border-radius: 20px;
@@ -279,11 +296,12 @@ function getFoodImage($food_name) {
             transition: all 0.4s;
             height: 100%;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid #FFE2E8;
         }
 
         .food-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+            box-shadow: 0 20px 40px rgba(245,163,176,0.15);
         }
 
         .card-img-wrapper {
@@ -307,7 +325,7 @@ function getFoodImage($food_name) {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            background: rgba(0,0,0,0.7);
+            background: rgba(90,74,79,0.8);
             backdrop-filter: blur(5px);
             color: white;
             padding: 0.3rem 1rem;
@@ -317,13 +335,13 @@ function getFoodImage($food_name) {
         }
 
         .rating {
-            color: #fdcb6e;
+            color: #F4C2C2;
             margin: 0.5rem 0;
             font-size: 0.9rem;
         }
 
         .rating span {
-            color: #636e72;
+            color: #A58E98;
             margin-left: 0.5rem;
             font-size: 0.8rem;
         }
@@ -331,22 +349,22 @@ function getFoodImage($food_name) {
         .price {
             font-size: 1.2rem;
             font-weight: 700;
-            color: #FF6B35;
+            color: #F5A3B0;
         }
 
         .location {
-            color: #636e72;
+            color: #A58E98;
             font-size: 0.8rem;
             margin: 0.5rem 0;
         }
 
         .location i {
-            color: #FF6B35;
+            color: #F5A3B0;
             margin-right: 0.3rem;
         }
 
         .food-description {
-            color: #7f8c8d;
+            color: #8A7A82;
             font-size: 0.85rem;
             line-height: 1.4;
             margin: 0.5rem 0;
@@ -356,49 +374,57 @@ function getFoodImage($food_name) {
             overflow: hidden;
         }
 
-        /* ========== EMPTY STATE ========== */
         .empty-state {
             text-align: center;
             padding: 4rem;
-            background: white;
+            background: #FFF9FB;
             border-radius: 20px;
+            border: 1px solid #FFE2E8;
         }
 
         .empty-state i {
             font-size: 4rem;
-            color: #ddd;
+            color: #FFD1DC;
             margin-bottom: 1rem;
         }
 
-        /* ========== FOOTER ========== */
         footer {
-            background: #1e272e;
-            color: #d2dae2;
+            background: #F8E9EE;
+            color: #7A5C68;
             padding: 4rem 0 2rem;
             margin-top: 4rem;
+            border-top: 1px solid #FFE2E8;
         }
 
         .footer-brand {
             font-size: 1.8rem;
             font-weight: 800;
-            color: #FF6B35;
+            color: #F5A3B0;
             margin-bottom: 1rem;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand img {
+            height: 40px;
+            width: auto;
+            border-radius: 10px;
         }
 
         footer h6 {
-            color: white;
+            color: #6B4E5E;
             font-weight: 600;
             margin-bottom: 1.5rem;
         }
 
         footer a {
-            color: #d2dae2;
+            color: #8A6F7A;
             text-decoration: none;
         }
 
         footer a:hover {
-            color: #FF6B35;
+            color: #F5A3B0;
         }
 
         .social-icons a {
@@ -407,12 +433,19 @@ function getFoodImage($food_name) {
             height: 35px;
             line-height: 35px;
             text-align: center;
-            background: rgba(255,255,255,0.1);
+            background: #FFE2E8;
             border-radius: 50%;
             margin-right: 0.5rem;
+            transition: all 0.3s;
+            color: #F5A3B0;
         }
 
-        /* ========== RESPONSIVE ========== */
+        .social-icons a:hover {
+            background: #F5A3B0;
+            color: white;
+            transform: translateY(-3px);
+        }
+
         @media (max-width: 768px) {
             .page-header h1 {
                 font-size: 2rem;
@@ -427,6 +460,14 @@ function getFoodImage($food_name) {
                 padding: 0.4rem 1rem;
                 font-size: 0.8rem;
             }
+
+            .navbar-brand img {
+                height: 35px;
+            }
+
+            .footer-brand img {
+                height: 32px;
+            }
         }
     </style>
 </head>
@@ -436,8 +477,8 @@ function getFoodImage($food_name) {
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <i class="fas fa-utensils fs-3 me-2" style="color: #FF6B35;"></i>
-            <span class="fw-bold fs-4" style="color: #FF6B35;">Jogja Foodies</span>
+            <img src="logo.jpeg" alt="Jogja Foodies Logo" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23F5A3B0%22/%3E%3Ctext x=%2250%22 y=%2267%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2250%22 font-weight=%22bold%22%3E🍴%3C/text%3E%3C/svg%3E';">
+            <span class="fw-bold fs-4" style="color: #F5A3B0;">Jogja Foodies</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -447,14 +488,10 @@ function getFoodImage($food_name) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold <?= ($current_page == 'index.php') ? 'active-red' : '' ?>" href="index.php">
-                        <i class="fas fa-home"></i> Home
-                    </a>
+                    <a class="nav-link fw-bold" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link fw-bold <?= ($current_page == 'menu.php') ? 'active-red' : '' ?>" href="menu.php">
-                        <i class="fas fa-utensils"></i> Menu
-                    </a>
+                    <a class="nav-link fw-bold active-red" href="menu.php">Menu</a>
                 </li>
             </ul>
         </div>
@@ -463,27 +500,19 @@ function getFoodImage($food_name) {
             <?php if(isset($_SESSION['user_id'])): ?>
                 <div class="dropdown d-inline-block">
                     <button class="btn rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" 
-                            style="background: #FF6B35; color: white; border: none;">
+                            style="background: #F5A3B0; color: white; border: none;">
                         <i class="fas fa-user-circle"></i> 
                         <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username']) ?>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="my_orders.php">
-                            <i class="fas fa-shopping-bag"></i> My Orders
-                        </a></li>
+                        <li><a class="dropdown-item" href="my_orders.php">My Orders</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="logout.php">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </a></li>
+                        <li><a class="dropdown-item text-danger" href="logout.php">Logout</a></li>
                     </ul>
                 </div>
             <?php else: ?>
-                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #FF6B35; color: white;">
-                    <i class="fas fa-sign-in-alt"></i> Masuk
-                </a>
-                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #FF6B35; color: #FF6B35;">
-                    <i class="fas fa-user-plus"></i> Daftar
-                </a>
+                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #F5A3B0; color: white; border: none;">Masuk</a>
+                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #F5A3B0; color: #F5A3B0;">Daftar</a>
             <?php endif; ?>
         </div>
     </div>
@@ -492,7 +521,7 @@ function getFoodImage($food_name) {
 <!-- ========== PAGE HEADER ========== -->
 <section class="page-header">
     <div class="container">
-        <h1><i class="fas fa-utensils"></i> Menu Kuliner Jogja</h1>
+        <h1>Menu Kuliner Jogja</h1>
         <p>Temukan berbagai makanan khas Yogyakarta yang menggugah selera</p>
     </div>
 </section>
@@ -503,13 +532,11 @@ function getFoodImage($food_name) {
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <div class="filter-group">
-                    <a href="?category=all" class="filter-btn <?= (!isset($_GET['category']) || $_GET['category'] == 'all') ? 'active' : '' ?>">
-                        <i class="fas fa-th-large"></i> Semua
-                    </a>
+                    <a href="?category=all" class="filter-btn <?= (!isset($_GET['category']) || $_GET['category'] == 'all') ? 'active' : '' ?>">Semua</a>
                     <?php foreach($categories as $cat): ?>
                         <a href="?category=<?= urlencode($cat) ?>" 
                            class="filter-btn <?= ($category == $cat) ? 'active' : '' ?>">
-                            <i class="fas fa-tag"></i> <?= htmlspecialchars($cat) ?>
+                            <?= htmlspecialchars($cat) ?>
                         </a>
                     <?php endforeach; ?>
                 </div>
@@ -522,9 +549,7 @@ function getFoodImage($food_name) {
                     <div class="search-box">
                         <input type="text" name="search" class="form-control" 
                                placeholder="Cari makanan..." value="<?= htmlspecialchars($search) ?>">
-                        <button type="submit">
-                            <i class="fas fa-search"></i> Cari
-                        </button>
+                        <button type="submit">Cari</button>
                     </div>
                 </form>
             </div>
@@ -535,7 +560,7 @@ function getFoodImage($food_name) {
 <!-- ========== MENU GRID ========== -->
 <section class="container my-5">
     <div class="result-info">
-        <p><i class="fas fa-chart-line"></i> Menampilkan <span><?= count($foods) ?></span> menu kuliner</p>
+        <p>Menampilkan <span><?= count($foods) ?></span> menu kuliner</p>
     </div>
 
     <div class="row g-4">
@@ -548,14 +573,17 @@ function getFoodImage($food_name) {
                             <span class="category-badge"><?= htmlspecialchars($food['category']) ?></span>
                         </div>
                         <div class="p-4">
-                            <h5 class="fw-bold mb-2"><?= htmlspecialchars($food['name']) ?></h5>
+                            <h5 class="fw-bold mb-2" style="color: #6B4E5E;"><?= htmlspecialchars($food['name']) ?></h5>
                             
                             <div class="rating">
                                 <?php 
                                 $full = floor($food['rating']);
+                                $half = ($food['rating'] - $full) >= 0.5;
                                 for($i = 1; $i <= 5; $i++): ?>
                                     <?php if($i <= $full): ?>
                                         <i class="fas fa-star"></i>
+                                    <?php elseif($half && $i == $full + 1): ?>
+                                        <i class="fas fa-star-half-alt"></i>
                                     <?php else: ?>
                                         <i class="far fa-star"></i>
                                     <?php endif; ?>
@@ -568,14 +596,12 @@ function getFoodImage($food_name) {
                             </div>
                             
                             <div class="food-description">
-                                <?= htmlspecialchars(substr($food['description'] ?? '', 0, 70)) ?>
+                                <?= htmlspecialchars(substr($food['description'] ?? '', 0, 70)) ?>...
                             </div>
                             
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <span class="price">Rp <?= number_format($food['price'], 0, ',', '.') ?></span>
-                                <a href="order.php?id=<?= $food['id'] ?>" class="btn-order">
-                                    <i class="fas fa-shopping-cart"></i> Pesan
-                                </a>
+                                <a href="order.php?id=<?= $food['id'] ?>" class="btn-order">Pesan</a>
                             </div>
                         </div>
                     </div>
@@ -585,50 +611,35 @@ function getFoodImage($food_name) {
             <div class="col-12">
                 <div class="empty-state">
                     <i class="fas fa-search"></i>
-                    <h4>Tidak ada menu ditemukan</h4>
+                    <h4 style="color: #6B4E5E;">Tidak ada menu ditemukan</h4>
                     <p class="text-muted">Coba cari dengan kata kunci lain atau reset filter</p>
-                    <a href="menu.php" class="btn btn-primary-custom mt-3">
-                        <i class="fas fa-sync-alt"></i> Reset Filter
-                    </a>
+                    <a href="menu.php" class="btn btn-primary-custom mt-3">Reset Filter</a>
                 </div>
             </div>
         <?php endif; ?>
     </div>
 </section>
 
-<!-- ========== FOOTER ========== -->
+
+<!-- Footer dengan Logo Gambar juga -->
 <footer>
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="footer-brand">
-                    <i class="fas fa-utensils"></i> Jogja Foodies
+                    <img src="logo.jpeg" alt="Jogja Foodies Logo">
+                    Jogja Foodies
                 </div>
-                <p>Discover the authentic taste of Yogyakarta through our curated culinary platform.</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
+                <p>Temukan makanan favoritmu!</p>
             </div>
-            
-            <div class="col-md-2 mb-4">
-                <h6>Quick Links</h6>
-                <ul class="list-unstyled">
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            
             <div class="col-md-3 mb-4">
                 <h6>Contact Info</h6>
                 <ul class="list-unstyled">
                     <li><i class="fas fa-map-marker-alt"></i> Yogyakarta, Indonesia</li>
-                    <li><i class="fas fa-envelope"></i> info@jogjafoodies.com</li>
+                    <li><i class="fas fa-envelope"></i> jogjafoodies@gmail.com</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
                 </ul>
             </div>
-            
             <div class="col-md-3 mb-4">
                 <h6>Jam Operasional</h6>
                 <ul class="list-unstyled">
@@ -637,11 +648,9 @@ function getFoodImage($food_name) {
                 </ul>
             </div>
         </div>
-        
-        <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
-        
+        <hr class="my-4" style="border-color: rgba(245,163,176,0.2);">
         <div class="text-center">
-            <p>&copy; 2024 Jogja Foodies. All rights reserved.</p>
+            <p class="mb-0">&copy; 2026 Jogja Foodies</p>
         </div>
     </div>
 </footer>

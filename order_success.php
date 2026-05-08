@@ -27,7 +27,7 @@ unset($_SESSION['order_data']);
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            background: #FFD1DC;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -40,12 +40,12 @@ unset($_SESSION['order_data']);
             text-align: center;
             max-width: 500px;
             margin: 2rem;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 30px 60px rgba(245,163,176,0.25);
         }
         .success-icon {
             width: 100px;
             height: 100px;
-            background: #00b894;
+            background: #F5A3B0;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -57,13 +57,26 @@ unset($_SESSION['order_data']);
             color: white;
         }
         .btn-home {
-            background: #FF6B35;
+            background: #F5A3B0;
             color: white;
             padding: 0.8rem 2rem;
             border-radius: 50px;
             text-decoration: none;
             display: inline-block;
             margin-top: 1rem;
+            transition: all 0.3s;
+        }
+        .btn-home:hover {
+            background: #E8919F;
+            color: white;
+            transform: translateY(-2px);
+        }
+        h2 {
+            color: #6B4E5E;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #A58E98;
         }
     </style>
 </head>

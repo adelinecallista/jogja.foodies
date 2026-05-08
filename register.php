@@ -1,7 +1,7 @@
 <?php
 // file: register.php
 session_start();
-require_once 'config/koneksi.php';  // Menggunakan koneksi.php (bukan database.php)
+require_once 'config/koneksi.php';
 
 // If already logged in, redirect to home
 if(isset($_SESSION['user_id'])) {
@@ -14,7 +14,6 @@ $success = '';
 $form_data = [];
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Gunakan koneksi MySQLi (sesuai modul)
     global $konek;
     
     $form_data = [
@@ -26,7 +25,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm_password = $_POST['confirm_password'] ?? '';
     $terms = isset($_POST['terms']);
     
-    // Validations
     $errors = [];
     
     if(empty($form_data['full_name'])) {
@@ -59,7 +57,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Anda harus menyetujui syarat & ketentuan";
     }
     
-    // Check if username or email exists (menggunakan MySQLi)
     if(empty($errors)) {
         $checkQuery = "SELECT id FROM users WHERE username = '$form_data[username]' OR email = '$form_data[email]'";
         $checkResult = mysqli_query($konek, $checkQuery);
@@ -67,7 +64,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         if(mysqli_num_rows($checkResult) > 0) {
             $errors[] = "Username atau email sudah terdaftar";
         } else {
-            // Insert new user - PASSWORD PLAIN TEXT (sesuai permintaan)
             $insertQuery = "INSERT INTO users (username, email, password, full_name, role, avatar, created_at) 
                            VALUES ('$form_data[username]', '$form_data[email]', '$password', '$form_data[full_name]', 'user', 'default-avatar.png', NOW())";
             
@@ -104,7 +100,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            background: #FFD1DC;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -112,29 +108,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 2rem;
         }
 
-        /* Container */
         .register-container {
             max-width: 1200px;
             width: 100%;
             background: white;
             border-radius: 30px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 30px 60px rgba(245,163,176,0.25);
             overflow: hidden;
             display: flex;
             flex-wrap: wrap;
         }
 
-        /* Left Side - Form */
         .form-side {
             flex: 1.2;
             padding: 3rem;
             background: white;
         }
 
-        /* Right Side - Info/Branding */
         .info-side {
             flex: 0.8;
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            background: #F5A3B0;
             padding: 3rem;
             color: white;
             display: flex;
@@ -151,7 +144,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             right: -30%;
             width: 300px;
             height: 300px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.15);
             border-radius: 50%;
             animation: float 10s ease-in-out infinite;
         }
@@ -163,7 +156,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             left: -20%;
             width: 250px;
             height: 250px;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
             animation: float 8s ease-in-out infinite reverse;
         }
@@ -242,16 +235,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 0.8rem;
         }
 
-        /* Form Styles */
         .form-side h3 {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #2d3436;
+            color: #6B4E5E;
             margin-bottom: 0.5rem;
         }
 
         .form-side .subtitle {
-            color: #636e72;
+            color: #A58E98;
             font-size: 0.85rem;
             margin-bottom: 2rem;
         }
@@ -274,7 +266,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             display: block;
             font-size: 0.75rem;
             font-weight: 600;
-            color: #2d3436;
+            color: #6B4E5E;
             margin-bottom: 0.3rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -283,18 +275,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         .form-group input {
             width: 100%;
             padding: 0.8rem 1rem;
-            border: 2px solid #e9ecef;
+            border: 2px solid #FFE2E8;
             border-radius: 12px;
             font-size: 0.9rem;
             transition: all 0.3s;
-            background: #f8f9fa;
+            background: #FFF9FB;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #FF6B35;
+            border-color: #F5A3B0;
             background: white;
-            box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+            box-shadow: 0 0 0 3px rgba(245,163,176,0.15);
         }
 
         .terms-group {
@@ -306,7 +298,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             align-items: center;
             gap: 0.5rem;
             font-size: 0.75rem;
-            color: #636e72;
+            color: #A58E98;
             text-transform: none;
             font-weight: normal;
             cursor: pointer;
@@ -315,11 +307,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         .terms-group input {
             width: 16px;
             height: 16px;
-            accent-color: #FF6B35;
+            accent-color: #F5A3B0;
         }
 
         .terms-group a {
-            color: #FF6B35;
+            color: #F5A3B0;
             text-decoration: none;
         }
 
@@ -329,7 +321,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .btn-submit {
             width: 100%;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            background: #F5A3B0;
             border: none;
             padding: 1rem;
             border-radius: 12px;
@@ -341,21 +333,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .btn-submit:hover {
+            background: #E8919F;
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255,107,53,0.3);
+            box-shadow: 0 10px 25px rgba(245,163,176,0.4);
         }
 
         .login-link {
             text-align: center;
             margin-top: 1.5rem;
             padding-top: 1rem;
-            border-top: 1px solid #e9ecef;
+            border-top: 1px solid #FFE2E8;
             font-size: 0.85rem;
-            color: #636e72;
+            color: #A58E98;
         }
 
         .login-link a {
-            color: #FF6B35;
+            color: #F5A3B0;
             text-decoration: none;
             font-weight: 600;
         }
@@ -364,7 +357,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             text-decoration: underline;
         }
 
-        /* Alert */
         .alert-custom {
             border-radius: 12px;
             font-size: 0.8rem;
@@ -373,18 +365,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .alert-error {
-            background: #fff5f0;
-            color: #FF6B35;
-            border-left: 4px solid #FF6B35;
+            background: #FFF5F7;
+            color: #F5A3B0;
+            border-left: 4px solid #F5A3B0;
         }
 
         .alert-success {
-            background: #e8f8f5;
-            color: #00b894;
-            border-left: 4px solid #00b894;
+            background: #E8F5E9;
+            color: #66BB6A;
+            border-left: 4px solid #66BB6A;
         }
 
-        /* Responsive */
         @media (max-width: 900px) {
             .register-container {
                 flex-direction: column;
@@ -430,7 +421,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
 <div class="register-container">
-    <!-- Left Side - Form -->
     <div class="form-side">
         <h3>Create An Account</h3>
         <p class="subtitle">Sign up to continue</p>
@@ -444,7 +434,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php if($success): ?>
         <div class="alert-custom alert-success">
             <i class="fas fa-check-circle"></i> <?php echo $success; ?>
-            <br><small><a href="login.php" style="color: #00b894; font-weight: 600;">Login here</a></small>
+            <br><small><a href="login.php" style="color: #66BB6A; font-weight: 600;">Login here</a></small>
         </div>
         <?php endif; ?>
         
@@ -500,20 +490,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php endif; ?>
     </div>
     
-    <!-- Right Side - Info/Branding -->
     <div class="info-side">
         <div class="info-content">
             <div class="logo">
-                <i class="fas fa-utensils"></i> Jogja Foodies
+                <i class="fas fa-heart"></i> Jogja Foodies
             </div>
             <h2>Welcome to <br>Jogja Foodies!</h2>
             <p>Discover the authentic taste of Yogyakarta through our curated culinary platform. Join thousands of foodies exploring the best culinary spots in Jogja.</p>
             
             <ul class="features-list">
-                <li><i class="fas fa-check"></i> Discover hidden culinary gems</li>
-                <li><i class="fas fa-check"></i> Share your food experiences</li>
-                <li><i class="fas fa-check"></i> Get exclusive discounts</li>
-                <li><i class="fas fa-check"></i> Join foodie community</li>
+                <li><i class="fas fa-heart"></i> Discover hidden culinary gems</li>
+                <li><i class="fas fa-heart"></i> Share your food experiences</li>
+                <li><i class="fas fa-heart"></i> Get exclusive discounts</li>
+                <li><i class="fas fa-heart"></i> Join foodie community</li>
             </ul>
             
             <div class="testimonial">

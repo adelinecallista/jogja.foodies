@@ -66,9 +66,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
         // Generate unique order number
         $order_number = 'JGF-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
         
-        // Insert order ke database (MySQLi)
         // Insert order ke database (MySQLi) - TANPA created_at
-$insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, quantity, price_per_item, delivery_fee, total_amount, delivery_method, payment_method, notes, status) 
+        $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, quantity, price_per_item, delivery_fee, total_amount, delivery_method, payment_method, notes, status) 
                 VALUES ('$order_number', {$_SESSION['user_id']}, $food_id, '{$food['name']}', $quantity, {$food['price']}, $delivery_fee, $total, '$delivery_method', '$payment_method', '$notes', 'pending')"; 
         
         if(mysqli_query($konek, $insert_query)) {
@@ -118,7 +117,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+            background: #FFD1DC;
             min-height: 100vh;
             padding: 2rem;
         }
@@ -132,7 +131,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(255,255,255,0.2);
+            background: rgba(245,163,176,0.9);
             backdrop-filter: blur(10px);
             padding: 0.7rem 1.5rem;
             border-radius: 50px;
@@ -145,7 +144,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
         }
 
         .back-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: #F5A3B0;
             color: white;
             transform: translateX(-5px);
         }
@@ -154,7 +153,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
             background: white;
             border-radius: 30px;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 30px 60px rgba(245,163,176,0.25);
             display: flex;
             flex-wrap: wrap;
         }
@@ -162,7 +161,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
         .food-preview {
             flex: 1;
             min-width: 300px;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            background: #FFD1DC;
             padding: 2rem;
             display: flex;
             flex-direction: column;
@@ -177,7 +176,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
             position: absolute;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
         }
 
@@ -191,21 +190,21 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
             height: 250px;
             border-radius: 30px;
             object-fit: cover;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 20px 40px rgba(245,163,176,0.3);
             position: relative;
             z-index: 2;
-            border: 4px solid rgba(255,255,255,0.3);
+            border: 4px solid rgba(255,255,255,0.5);
         }
 
         .food-category {
             position: relative;
             z-index: 2;
             margin-top: 1.5rem;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.3);
             backdrop-filter: blur(10px);
             padding: 0.5rem 1.5rem;
             border-radius: 50px;
-            color: white;
+            color: #6B4E5E;
             font-size: 0.85rem;
             font-weight: 500;
         }
@@ -214,12 +213,12 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
             position: relative;
             z-index: 2;
             margin-top: 0.8rem;
-            color: #FFD166;
+            color: #FFB7C5;
             font-size: 0.9rem;
         }
 
         .food-rating span {
-            color: white;
+            color: #8A7A82;
             margin-left: 0.3rem;
         }
 
@@ -233,23 +232,23 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
         .order-form h2 {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #2d3436;
+            color: #6B4E5E;
             margin-bottom: 0.3rem;
         }
 
         .food-location {
-            color: #636e72;
+            color: #A58E98;
             font-size: 0.85rem;
             margin-bottom: 1.5rem;
         }
 
         .food-location i {
-            color: #FF6B35;
+            color: #F5A3B0;
             margin-right: 0.3rem;
         }
 
         .price-container {
-            background: #FFF5F0;
+            background: #FFF5F7;
             padding: 1rem;
             border-radius: 15px;
             margin-bottom: 1.5rem;
@@ -257,7 +256,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
 
         .price-label {
             font-size: 0.8rem;
-            color: #636e72;
+            color: #A58E98;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -265,7 +264,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
         .food-price {
             font-size: 2rem;
             font-weight: 800;
-            color: #FF6B35;
+            color: #F5A3B0;
         }
 
         .form-group {
@@ -275,29 +274,30 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
         .form-group label {
             display: block;
             font-weight: 600;
-            color: #2d3436;
+            color: #6B4E5E;
             margin-bottom: 0.5rem;
             font-size: 0.85rem;
         }
 
         .form-group label i {
-            color: #FF6B35;
+            color: #F5A3B0;
             margin-right: 0.5rem;
         }
 
         .form-control, .form-select {
             border-radius: 12px;
-            border: 2px solid #e9ecef;
+            border: 2px solid #FFE2E8;
             padding: 0.8rem 1rem;
             font-size: 0.9rem;
             transition: all 0.3s;
             width: 100%;
+            background: #FFF9FB;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: #FF6B35;
+            border-color: #F5A3B0;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+            box-shadow: 0 0 0 3px rgba(245,163,176,0.2);
         }
 
         .quantity-wrapper {
@@ -310,21 +310,21 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
             width: 45px;
             height: 45px;
             border-radius: 12px;
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
+            background: #FFF9FB;
+            border: 2px solid #FFE2E8;
             font-size: 1.2rem;
             font-weight: bold;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            color: #2d3436;
+            color: #6B4E5E;
             transition: all 0.3s;
         }
 
         .quantity-btn:hover {
-            background: #FF6B35;
-            border-color: #FF6B35;
+            background: #F5A3B0;
+            border-color: #F5A3B0;
             color: white;
         }
 
@@ -332,15 +332,16 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
             font-size: 1.2rem;
             font-weight: 600;
             padding: 0.5rem 1rem;
-            background: #f8f9fa;
+            background: #FFF9FB;
             border-radius: 12px;
-            border: 2px solid #e9ecef;
+            border: 2px solid #FFE2E8;
             min-width: 80px;
             text-align: center;
+            color: #6B4E5E;
         }
 
         .total-section {
-            background: #f8f9fa;
+            background: #FFF5F7;
             padding: 1rem;
             border-radius: 15px;
             margin: 1.5rem 0;
@@ -351,18 +352,18 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
 
         .total-label {
             font-weight: 600;
-            color: #2d3436;
+            color: #6B4E5E;
         }
 
         .total-amount {
             font-size: 1.5rem;
             font-weight: 800;
-            color: #FF6B35;
+            color: #F5A3B0;
         }
 
         .btn-order {
             width: 100%;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
+            background: #F5A3B0;
             border: none;
             padding: 1rem;
             border-radius: 12px;
@@ -375,17 +376,18 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
         }
 
         .btn-order:hover {
+            background: #E8919F;
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255,107,53,0.3);
+            box-shadow: 0 10px 25px rgba(245,163,176,0.4);
         }
 
         .btn-cancel {
             width: 100%;
             background: transparent;
-            border: 2px solid #e9ecef;
+            border: 2px solid #FFE2E8;
             padding: 0.8rem;
             border-radius: 12px;
-            color: #636e72;
+            color: #A58E98;
             font-weight: 500;
             transition: all 0.3s;
             cursor: pointer;
@@ -395,8 +397,8 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
         }
 
         .btn-cancel:hover {
-            border-color: #FF6B35;
-            color: #FF6B35;
+            border-color: #F5A3B0;
+            color: #F5A3B0;
         }
 
         .payment-methods {
@@ -406,7 +408,7 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
         .payment-title {
             font-size: 0.8rem;
             font-weight: 600;
-            color: #636e72;
+            color: #A58E98;
             margin-bottom: 0.8rem;
             text-transform: uppercase;
         }
@@ -421,22 +423,23 @@ $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, 
             flex: 1;
             padding: 0.7rem;
             border-radius: 10px;
-            background: #f8f9fa;
-            border: 2px solid #e9ecef;
+            background: #FFF9FB;
+            border: 2px solid #FFE2E8;
             transition: all 0.3s;
             cursor: pointer;
             text-align: center;
+            color: #6B4E5E;
         }
 
         .payment-option input {
             margin-right: 0.5rem;
-            accent-color: #FF6B35;
+            accent-color: #F5A3B0;
         }
 
         .alert-error {
-            background: #fff5f0;
-            color: #FF6B35;
-            border-left: 4px solid #FF6B35;
+            background: #FFF5F7;
+            color: #F5A3B0;
+            border-left: 4px solid #F5A3B0;
             padding: 0.8rem 1rem;
             border-radius: 12px;
             margin-bottom: 1rem;
