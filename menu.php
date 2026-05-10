@@ -22,7 +22,14 @@ if ($category) {
 if ($search) {
     $query .= " AND (name LIKE '%$search%' OR description LIKE '%$search%' OR location LIKE '%$search%')";
 }
-$query .= " ORDER BY rating DESC, name ASC";
+
+// cek apakah kolom rating ada
+$check_column = mysqli_query($konek, "SHOW COLUMNS FROM foods LIKE 'rating'");
+if(mysqli_num_rows($check_column) > 0) {
+    $query .= " ORDER BY rating DESC, name ASC";
+} else {
+    $query .= " ORDER BY name ASC";
+}
 
 $result = mysqli_query($konek, $query);
 $foods = [];
