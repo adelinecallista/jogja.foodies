@@ -2,7 +2,7 @@
 session_start();
 require_once 'config/koneksi.php';
 
-// Check if order success exists
+// cek apakah data order tersedia di session, jika tidak redirect ke menu
 if(!isset($_SESSION['order_success']) || !isset($_SESSION['order_data'])) {
     header("Location: menu.php");
     exit();
@@ -10,7 +10,7 @@ if(!isset($_SESSION['order_success']) || !isset($_SESSION['order_data'])) {
 
 $order = $_SESSION['order_success_data'] ?? $_SESSION['order_data'];
 
-// Clear session after displaying
+// hapus data order dari session setelah ditampilkan
 unset($_SESSION['order_success']);
 unset($_SESSION['order_data']);
 ?>

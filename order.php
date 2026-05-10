@@ -1,15 +1,14 @@
 <?php
-// file: order.php
 session_start();
 require_once 'config/koneksi.php';
 
-// Check if user is logged in
+// ngecek login
 if(!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// Get food ID from URL
+// ngecek id makanan 
 $food_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if($food_id <= 0) {
@@ -17,12 +16,12 @@ if($food_id <= 0) {
     exit();
 }
 
-// Get quantity from URL
+// ngecek jumlah pesanan (default 1, max 99)
 $quantity = isset($_GET['quantity']) ? (int)$_GET['quantity'] : 1;
 if($quantity < 1) $quantity = 1;
 if($quantity > 99) $quantity = 99;
 
-// Get food data from database (MySQLi)
+// ambil data makanan dari database
 $query = "SELECT * FROM foods WHERE id = $food_id";
 $result = mysqli_query($konek, $query);
 $food = mysqli_fetch_assoc($result);
@@ -32,12 +31,12 @@ if(!$food) {
     exit();
 }
 
-// Get user data
+// ambil data user dari database
 $user_query = "SELECT * FROM users WHERE id = " . $_SESSION['user_id'];
 $user_result = mysqli_query($konek, $user_query);
 $user = mysqli_fetch_assoc($user_result);
 
-// Fungsi gambar
+// memanggil fungsi gambar makanan berdasarkan nama
 function getFoodImage($food_name) {
     $clean_name = strtolower(str_replace(' ', '', $food_name));
     
@@ -50,34 +49,27 @@ function getFoodImage($food_name) {
     return 'assets/gudeg.jpeg';
 }
 
-// Get form values from POST or default
+// inisialisasi variabel untuk form
 $payment_method = isset($_POST['payment_method']) ? $_POST['payment_method'] : 'cash';
 $notes = isset($_POST['notes']) ? trim($_POST['notes']) : '';
 $delivery_fee = 0;
 $total = ($food['price'] * $quantity) + $delivery_fee;
 $error = '';
 
-// Process order if form submitted
+// submit order
 if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
     if($quantity < 1) {
         $error = "Jumlah minimal 1";
     } else {
-        // Generate unique order number
-        $order_number = 'JGF-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
-        
-        // Insert order ke database (MySQLi) - TANPA created_at
-        $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, quantity, price_per_item, total_amount, payment_method, notes, status) 
-                VALUES ('$order_number', {$_SESSION['user_id']}, $food_id, '{$food['name']}', $quantity, {$food['price']}, $total, '$payment_method', '$notes', 'pending')"; 
+        // memasukkan data order ke database
+        $insert_query = "INSERT INTO orders (user_id, food_id, food_name, quantity, price_per_item, total_amount, payment_method, notes, status) 
+                VALUES ({$_SESSION['user_id']}, $food_id, '{$food['name']}', $quantity, {$food['price']}, $total, '$payment_method', '$notes', 'pending')"; 
         
         if(mysqli_query($konek, $insert_query)) {
-            // Get the inserted order ID
-            $order_id = mysqli_insert_id($konek);
-            
-            // Save to session for success page
+            //simpan data order ke session untuk ditampilkan di halaman sukses           
             $_SESSION['order_success'] = true;
             $_SESSION['order_data'] = [
-                'order_id' => $order_id,
-                'order_number' => $order_number,
+                'order_id' => mysqli_insert_id($konek),
                 'food_id' => $food['id'],
                 'food_name' => $food['name'],
                 'quantity' => $quantity,
@@ -442,28 +434,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
             margin-bottom: 1rem;
             font-size: 0.85rem;
         }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
             
-            .food-image {
-                width: 180px;
-                height: 180px;
-            }
+        .food-image {
+            width: 180px;
+            height: 180px;
+        }
             
-            .order-form {
-                padding: 1.5rem;
-            }
+        .order-form {
+            padding: 1.5rem;
+        }
             
-            .order-form h2 {
-                font-size: 1.4rem;
-            }
+        .order-form h2 {
+            font-size: 1.4rem;
+        }
             
-            .food-price {
-                font-size: 1.5rem;
-            }
+        .food-price {
+            font-size: 1.5rem;
         }
     </style>
 </head>

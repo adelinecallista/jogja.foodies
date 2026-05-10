@@ -1,13 +1,8 @@
 <?php
-// file: my_orders.php
-// ============================================
-// HALAMAN RIWAYAT PESANAN USER - TANPA KODE ORDER & STATUS
-// ============================================
 
 session_start();
 require_once 'config/koneksi.php';
 
-// ========== CEK LOGIN ==========
 if(!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit(); 
@@ -15,7 +10,6 @@ if(!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
-// ========== CEK KOLOM created_at ==========
 $check_column = mysqli_query($konek, "SHOW COLUMNS FROM orders LIKE 'created_at'");
 $has_created_at = mysqli_num_rows($check_column) > 0;
 
