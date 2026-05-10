@@ -1,7 +1,6 @@
 <?php
-// file: login.php
 session_start();
-require_once 'config/koneksi.php';  // Menggunakan koneksi.php
+require_once 'config/koneksi.php'; 
 
 // Jika sudah login, redirect ke index
 if(isset($_SESSION['user_id'])) {
@@ -19,23 +18,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $remember = isset($_POST['remember']);
     
-    // Query ke database menggunakan MySQLi (sesuai modul 7)
+    // Query ke database untuk mencari user berdasarkan username atau email
     $query = "SELECT * FROM users WHERE username = '$username' OR email = '$username'";
     $result = mysqli_query($konek, $query);
     
     if(mysqli_num_rows($result) == 1) {
         $user = mysqli_fetch_assoc($result);
         
-        // VERIFIKASI PASSWORD PLAIN TEXT (LANGSUNG DIBANDINGKAN)
+        // verifikasi password
         if($password == $user['password']) {
-            // Set session (sesuai modul 6)
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['full_name'] = $user['full_name'];
             $_SESSION['email'] = $user['email'];
-            $_SESSION['status'] = "login";  // Sesuai modul 6 halaman 3
+            $_SESSION['status'] = "login";
             
-            // Remember me (cookie untuk 30 hari)
             if($remember) {
                 setcookie('user_id', $user['id'], time() + (86400 * 30), "/");
                 setcookie('username', $user['username'], time() + (86400 * 30), "/");
@@ -104,11 +101,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         .icon-2 { bottom: 15%; right: 8%; animation: float 10s ease-in-out infinite reverse; color: #FFB7C5; }
         .icon-3 { top: 50%; left: 3%; animation: float 12s ease-in-out infinite; color: #F5A3B0; }
         .icon-4 { bottom: 30%; right: 5%; animation: float 7s ease-in-out infinite reverse; color: #FFB7C5; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
-        }
 
         .login-wrapper {
             width: 100%;
@@ -350,34 +342,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .login-card {
             animation: slideUp 0.5s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 576px) {
-            .login-wrapper {
-                margin: 1rem;
-            }
-            .card-body {
-                padding: 1.5rem;
-            }
-            .social-login {
-                flex-direction: column;
-            }
-            .options-row {
-                flex-direction: column;
-                gap: 0.8rem;
-                align-items: flex-start;
-            }
         }
     </style>
 </head>
