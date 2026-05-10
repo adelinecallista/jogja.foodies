@@ -1,11 +1,10 @@
 <?php
-// file: menu.php
 session_start();
 require_once 'config/koneksi.php';
 
 $current_page = 'menu.php';
 
-// Get filter parameters
+//untuk melakukan filter dan pencarian
 $category = isset($_GET['category']) && $_GET['category'] !== 'all' 
     ? mysqli_real_escape_string($konek, $_GET['category']) 
     : '';
@@ -13,17 +12,17 @@ $search = isset($_GET['search'])
     ? mysqli_real_escape_string($konek, $_GET['search']) 
     : '';
 
-// Build query
+//untuk mengambil data makanan
 $query = "SELECT * FROM foods WHERE 1=1";
 
-if ($category) {
+if ($category) { // jika kategori dipilih, tambahkan kondisi ke query
     $query .= " AND category = '$category'";
 }
-if ($search) {
+if ($search) { // jika kata kunci pencarian ada, tambahkan kondisi LIKE ke query
     $query .= " AND (name LIKE '%$search%' OR description LIKE '%$search%' OR location LIKE '%$search%')";
 }
 
-// cek apakah kolom rating ada
+// cek apakah ada kolom rate
 $check_column = mysqli_query($konek, "SHOW COLUMNS FROM foods LIKE 'rating'");
 if(mysqli_num_rows($check_column) > 0) {
     $query .= " ORDER BY rating DESC, name ASC";
@@ -37,7 +36,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     $foods[] = $row;
 }
 
-// Get unique categories
+//untuk mengambil kategori unik dari tabel foods
 $cat_query = "SELECT DISTINCT category FROM foods ORDER BY category";
 $cat_result = mysqli_query($konek, $cat_query);
 $categories = [];
@@ -45,7 +44,7 @@ while ($row = mysqli_fetch_assoc($cat_result)) {
     $categories[] = $row['category'];
 }
 
-// Fungsi gambar
+// Fungsi untuk mendapatkan gambar berdasarkan nama makanan dari folder assets
 function getFoodImage($food_name) {
     $clean_name = strtolower(str_replace(' ', '', $food_name));
     
@@ -480,7 +479,7 @@ function getFoodImage($food_name) {
 </head>
 <body>
 
-<!-- ========== NAVBAR ========== -->
+<!-- navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
@@ -503,6 +502,7 @@ function getFoodImage($food_name) {
             </ul>
         </div>
         
+        <!-- untuk dropdown menu bagi pengguna -->
         <div class="d-flex align-items-center" style="gap: 10px;">
             <?php if(isset($_SESSION['user_id'])): ?>
                 <div class="dropdown d-inline-block">
@@ -517,7 +517,7 @@ function getFoodImage($food_name) {
                         <li><a class="dropdown-item text-danger" href="logout.php">Logout</a></li>
                     </ul>
                 </div>
-            <?php else: ?>
+            <?php else: ?> <!-- jika pengguna belum login -->
                 <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #F5A3B0; color: white; border: none;">Masuk</a>
                 <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #F5A3B0; color: #F5A3B0;">Daftar</a>
             <?php endif; ?>
@@ -525,7 +525,7 @@ function getFoodImage($food_name) {
     </div>
 </nav>
 
-<!-- ========== PAGE HEADER ========== -->
+<!-- header -->
 <section class="page-header">
     <div class="container">
         <h1>Menu Kuliner Jogja</h1>
@@ -533,7 +533,7 @@ function getFoodImage($food_name) {
     </div>
 </section>
 
-<!-- ========== FILTER SECTION ========== -->
+<!-- filter -->
 <section class="filter-section">
     <div class="container">
         <div class="row align-items-center">
@@ -564,7 +564,7 @@ function getFoodImage($food_name) {
     </div>
 </section>
 
-<!-- ========== MENU GRID ========== -->
+<!-- tampilan menu -->
 <section class="container my-5">
     <div class="result-info">
         <p>Menampilkan <span><?= count($foods) ?></span> menu kuliner</p>
@@ -628,7 +628,7 @@ function getFoodImage($food_name) {
 </section>
 
 
-<!-- Footer dengan Logo Gambar juga -->
+<!-- Footer -->
 <footer>
     <div class="container">
         <div class="row">

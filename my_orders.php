@@ -19,21 +19,21 @@ $user_id = $_SESSION['user_id'];
 $check_column = mysqli_query($konek, "SHOW COLUMNS FROM orders LIKE 'created_at'");
 $has_created_at = mysqli_num_rows($check_column) > 0;
 
-// ========== AMBIL DATA PESANAN ==========
-$query = "SELECT o.*, f.name as food_name 
+// penerapan fungsi join digunakn untuk mengambil data nama makanan dari tabel foods berdasarkan food_id di tabel orders
+$query = "SELECT o.*, f.name as food_name  /* untuk mengambil nama makanan */
           FROM orders o
           LEFT JOIN foods f ON o.food_id = f.id
-          WHERE o.user_id = $user_id
+          WHERE o.user_id = $user_id /* diabndingkan dengan user_id yang login */
           ORDER BY o.id DESC";
 
 $result = mysqli_query($konek, $query);
-$orders = [];
+$orders = []; /* untuk menyimpan data pesanan */
 
 while ($row = mysqli_fetch_assoc($result)) {
     $orders[] = $row;
 }
 
-// ========== FUNGSI AMBIL GAMBAR ==========
+// fungsi untuk menentukan gambar makanan berdasarkan nama makanan
 function getFoodImageFromName($food_name) {
     $clean_name = strtolower(str_replace(' ', '', $food_name));
     
@@ -46,7 +46,7 @@ function getFoodImageFromName($food_name) {
     if(strpos($clean_name, 'ayam') !== false) return 'assets/ayam.jpeg';
     if(strpos($clean_name, 'ronde') !== false) return 'assets/ronde.jpeg';
     
-    return 'assets/gudeg.jpeg';
+    return 'assets/gudeg.jpeg'; // default image jika tidak ada kecocokan
 }
 ?>
 
@@ -326,7 +326,7 @@ function getFoodImageFromName($food_name) {
 </head>
 <body>
 
-<!-- ========== NAVBAR ========== -->
+<!-- navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
@@ -371,7 +371,7 @@ function getFoodImageFromName($food_name) {
     </div>
 </nav>
 
-<!-- ========== PAGE HEADER ========== -->
+<!-- header -->
 <section class="page-header">
     <div class="container">
         <h1>My Orders</h1>
@@ -379,7 +379,7 @@ function getFoodImageFromName($food_name) {
     </div>
 </section>
 
-<!-- ========== LIST ORDER ========== -->
+<!-- menampilkan pesanan -->
 <section class="container my-5">
     
     <?php if(count($orders) > 0): ?>
@@ -387,7 +387,6 @@ function getFoodImageFromName($food_name) {
         <?php foreach($orders as $order): ?>
         <div class="order-card">
             <div class="order-body">
-                <!-- GAMBAR MAKANAN -->
                 <img src="<?php echo getFoodImageFromName($order['food_name']); ?>" 
                      alt="<?php echo htmlspecialchars($order['food_name']); ?>" 
                      class="order-image">
@@ -397,7 +396,7 @@ function getFoodImageFromName($food_name) {
                     <!-- NAMA MAKANAN + TANGGAL -->
                     <h5><?php echo htmlspecialchars($order['food_name']); ?></h5>
                     <div class="order-meta">
-                        <span><i class="fas fa-calendar-alt"></i> 
+                        <span><i class="fas fa-calendar-alt"></i> <!-- membuat tanggal pesanan -->
                             <?php 
                                 if($has_created_at && isset($order['created_at']) && !empty($order['created_at'])) {
                                     echo date('d M Y, H:i', strtotime($order['created_at']));
@@ -409,7 +408,6 @@ function getFoodImageFromName($food_name) {
                             ?>
                         </span>
                         <span><i class="fas fa-box"></i> Jumlah: <?php echo $order['quantity']; ?>x</span>
-                        <span><i class="fas fa-truck"></i> <?php echo $order['delivery_method'] == 'pickup' ? 'Ambil Sendiri' : 'Diantar'; ?></span>
                         <span><i class="fas fa-credit-card"></i> <?php echo strtoupper($order['payment_method']); ?></span>
                     </div>
                     <?php if(!empty($order['notes'])): ?>
@@ -417,7 +415,7 @@ function getFoodImageFromName($food_name) {
                     <?php endif; ?>
                 </div>
                 
-                <!-- TOTAL HARGA & TOMBOL PESAN LAGI -->
+                <!-- total harga -->
                 <div class="text-end">
                     <div class="order-total mb-2">Rp <?php echo number_format($order['total_amount'], 0, ',', '.'); ?></div>
                     <a href="order.php?id=<?php echo $order['food_id']; ?>" class="btn-order-again">
@@ -429,7 +427,7 @@ function getFoodImageFromName($food_name) {
         <?php endforeach; ?>
         
     <?php else: ?>
-        
+        <!-- jika belum ada pesanan -->
         <div class="empty-state">
             <i class="fas fa-receipt"></i>
             <h4 class="mt-3">Belum ada pesanan</h4>
@@ -440,8 +438,8 @@ function getFoodImageFromName($food_name) {
     <?php endif; ?>
 </section>
 
-<!-- ========== FOOTER ========== -->
-<footer>
+<!-- footer -->
+ <footer>
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-4">

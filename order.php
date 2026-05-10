@@ -51,10 +51,9 @@ function getFoodImage($food_name) {
 }
 
 // Get form values from POST or default
-$delivery_method = isset($_POST['delivery_method']) ? $_POST['delivery_method'] : 'pickup';
 $payment_method = isset($_POST['payment_method']) ? $_POST['payment_method'] : 'cash';
 $notes = isset($_POST['notes']) ? trim($_POST['notes']) : '';
-$delivery_fee = ($delivery_method == 'delivery') ? 10000 : 0;
+$delivery_fee = 0;
 $total = ($food['price'] * $quantity) + $delivery_fee;
 $error = '';
 
@@ -478,7 +477,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
     </a>
     
     <div class="order-card">
-        <!-- Left Side - Food Preview -->
+        <!-- kelas bagian makanan -->
         <div class="food-preview">
             <img src="<?php echo getFoodImage($food['name']); ?>" alt="<?php echo htmlspecialchars($food['name']); ?>" class="food-image">
             <div class="food-category">
@@ -498,7 +497,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
             </div>
         </div>
         
-        <!-- Right Side - Order Form -->
+        <!-- kelas bagian formulir pemesanan -->
         <div class="order-form">
             <h2><?php echo htmlspecialchars($food['name']); ?></h2>
             <div class="food-location">
@@ -519,7 +518,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
             <form method="POST" action="">
                 <input type="hidden" name="food_id" value="<?php echo $food['id']; ?>">
                 
-                <!-- Quantity -->
+                <!-- jumlah pesanan -->
                 <div class="form-group">
                     <label><i class="fas fa-shopping-cart"></i> Jumlah Pesanan</label>
                     <div class="quantity-wrapper">
@@ -529,22 +528,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
                     </div>
                 </div>
                 
-                <!-- Notes -->
+                <!-- catatan tambahan -->
                 <div class="form-group">
                     <label><i class="fas fa-pen"></i> Catatan (opsional)</label>
                     <textarea name="notes" class="form-control" rows="2" placeholder="Misal: tidak pedas, porsi banyak, tambah sambal..."><?php echo htmlspecialchars($notes); ?></textarea>
                 </div>
                 
-                <!-- Delivery Method -->
-                <div class="form-group">
-                    <label><i class="fas fa-truck"></i> Metode Pengiriman</label>
-                    <select name="delivery_method" class="form-select" onchange="this.form.submit()">
-                        <option value="pickup" <?php echo $delivery_method == 'pickup' ? 'selected' : ''; ?>>Pickup (Gratis)</option>
-                        <option value="delivery" <?php echo $delivery_method == 'delivery' ? 'selected' : ''; ?>>Delivery (Rp 10.000)</option>
-                    </select>
-                </div>
-                
-                <!-- Payment Method -->
+                <!-- pembayaran -->
                 <div class="payment-methods">
                     <div class="payment-title">Metode Pembayaran</div>
                     <div class="payment-options">
@@ -568,7 +558,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
                     </span>
                 </div>
                 
-                <!-- Buttons -->
+                <!-- konfirm -->
                 <button type="submit" name="confirm_order" class="btn-order">
                     <i class="fas fa-check-circle"></i> Konfirmasi Pesanan
                 </button>
