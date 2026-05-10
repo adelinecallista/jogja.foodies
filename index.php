@@ -17,11 +17,11 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #FFF5F7;  /* soft pastel pink background */
+            background: #FFF5F7;  /*pink bacground*/
             color: #4A4A4A;
         }
 
-        /* Pastel Pink Color Palette */
+    
         :root {
             --pastel-pink: #FFB7C5;
             --pastel-pink-dark: #F5A3B0;
@@ -124,9 +124,9 @@
 
         .hero {
         max-width: 1200px;
-        margin: 40px auto; /* biar ada jarak atas bawah & tengah */
+        margin: 40px auto; 
         background-color: pink;
-        border-radius: 20px; /* biar estetik */
+        border-radius: 20px; 
         padding: 60px 20px;
         }
 
@@ -250,9 +250,8 @@
             margin-bottom: 3rem;
         }
 
-        /* Top Rated Section - Pastel Mauve solid (no gradient) */
         .top-rated-section {
-            background: #FDF2F5;  /* solid pastel pinkish white */
+            background: #FDF2F5;  
             padding: 5rem 0;
             margin: 3rem 0;
         }
@@ -321,9 +320,8 @@
             margin-right: 0.3rem;
         }
 
-        /* CTA Section - solid pastel pink (no gradient) */
         .cta-section {
-            background: #FFD1DC;  /* solid pastel blush */
+            background: #FFD1DC;  
             padding: 5rem 0;
             border-radius: 0;
             color: #6B4E5E;
@@ -348,7 +346,7 @@
         }
 
         footer {
-            background: #F8E9EE;  /* soft pastel pink footer */
+            background: #F8E9EE; 
             color: #7A5C68;
             padding: 4rem 0 2rem;
             border-top: 1px solid #FFE2E8;
@@ -435,7 +433,7 @@
             }
         }
 
-        /* Logo fallback styling jika gambar tidak ditemukan */
+ 
         .logo-placeholder {
             background: #F5A3B0;
             width: 45px;
@@ -455,7 +453,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <!-- Logo menggunakan file logo.jpeg -->
+
             <img src="assets/logo.jpeg" alt="Jogja Foodies Logo" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23F5A3B0%22/%3E%3Ctext x=%2250%22 y=%2267%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2250%22 font-weight=%22bold%22%3E🍴%3C/text%3E%3C/svg%3E';">
             <span class="fw-bold fs-4" style="color: #F5A3B0;">Jogja Foodies</span>
         </a>
@@ -478,7 +476,7 @@
         <div class="d-flex align-items-center" style="gap: 10px;">
             <i class="bi bi-search fs-5 cursor-pointer" style="cursor: pointer; color: #F5A3B0;"></i>
             
-            <!-- Simulasi guest (karena tidak ada session di frontend static) -->
+
             <div class="dropdown d-inline-block">
                 <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #F5A3B0; color: white; border: none;">Masuk</a>
                 <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #F5A3B0; color: #F5A3B0;">Daftar</a>
@@ -500,7 +498,7 @@
     </div>
 </section>
 
-<!-- Top Rated Section - Data makanan khas Jogja dengan warna pastel -->
+<!-- Data makanan khas Jogja  -->
 <section class="top-rated-section">
     <div class="container">
         <h2 class="section-title"> Top Rated <span style="color: #F5A3B0;">Dishes</span></h2>
@@ -566,7 +564,7 @@
 </section>
 
 
-<!-- Footer dengan Logo Gambar juga -->
+<!-- Footer dengan Logo Gambar -->
 <footer>
     <div class="container">
         <div class="row">
