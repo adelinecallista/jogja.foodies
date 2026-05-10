@@ -472,12 +472,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
             
-            <div class="terms-group">
-                <label>
-                    <input type="checkbox" name="terms" required>
-                    <span>Saya setuju dengan <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a></span>
-            </div>
-            
             <button type="submit" class="btn-submit">
                 <i class="fas fa-user-plus"></i> SUBMIT
             </button>

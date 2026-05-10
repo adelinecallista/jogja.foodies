@@ -67,6 +67,13 @@ function getFoodImageFromName($food_name) {
             box-sizing: border-box;
         }
 
+        .container.my-5 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* otomatis menyesuaikan lebar */
+            gap: 20px; /* jarak antar card */
+            justify-items: center;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             background: #FFF5F7;
@@ -187,14 +194,15 @@ function getFoodImageFromName($food_name) {
         }
 
         .order-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            transition: all 0.3s;
-            margin-bottom: 1.5rem;
-            border: 1px solid #FFE2E8;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 280px; /* ukuran tiap kotak */
+            text-align: center;
+            padding: 15px;
         }
+
 
         .order-card:hover {
             transform: translateY(-3px);
@@ -203,16 +211,16 @@ function getFoodImageFromName($food_name) {
 
         .order-body {
             display: flex;
-            padding: 1.5rem;
-            gap: 1.5rem;
-            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: center;
         }
 
         .order-image {
             width: 100px;
             height: 100px;
-            border-radius: 12px;
             object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
 
         .order-details {
