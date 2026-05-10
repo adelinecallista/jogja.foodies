@@ -459,7 +459,7 @@
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
             <!-- Logo menggunakan file logo.jpeg -->
-            <img src="logo.jpeg" alt="Jogja Foodies Logo" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23F5A3B0%22/%3E%3Ctext x=%2250%22 y=%2267%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2250%22 font-weight=%22bold%22%3E🍴%3C/text%3E%3C/svg%3E';">
+            <img src="assets/logo.jpeg" alt="Jogja Foodies Logo" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23F5A3B0%22/%3E%3Ctext x=%2250%22 y=%2267%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2250%22 font-weight=%22bold%22%3E🍴%3C/text%3E%3C/svg%3E';">
             <span class="fw-bold fs-4" style="color: #F5A3B0;">Jogja Foodies</span>
         </a>
         
@@ -568,7 +568,6 @@
 
 </section>
 
-<!-- CTA Section - Solid pastel pink (tanpa gradasi) -->
 
 <!-- Footer dengan Logo Gambar juga -->
 <footer>
@@ -576,7 +575,7 @@
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="footer-brand">
-                    <img src="logo.jpeg" alt="Jogja Foodies Logo">
+                    <img src="assets/logo.jpeg" alt="Jogja Foodies Logo">
                     Jogja Foodies
                 </div>
                 <p>Temukan makanan favoritmu!</p>
