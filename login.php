@@ -436,24 +436,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label class="checkbox-label">
                         <input type="checkbox" name="remember"> Ingat saya
                     </label>
-                    <a href="#" class="forgot-link">Lupa password?</a>
                 </div>
                 
                 <button type="submit" class="btn-login">
                     <i class="fas fa-sign-in-alt"></i> Login
                 </button>
             </form>
-            
-            <div class="divider">
-                <span>atau login dengan</span>
-            </div>
-            
- 
-            <div class="social-login">
-                <button class="social-btn" onclick="alert('Login dengan Google akan segera hadir!')">
-                    <i class="fab fa-google"></i> Login dengan Google
-                </button>
-            </div>
             
             <div class="register-link">
                 <p>Belum punya akun? <a href="register.php">Daftar sekarang</a></p>
