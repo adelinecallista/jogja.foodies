@@ -66,8 +66,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
         $order_number = 'JGF-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
         
         // Insert order ke database (MySQLi) - TANPA created_at
-        $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, quantity, price_per_item, delivery_fee, total_amount, delivery_method, payment_method, notes, status) 
-                VALUES ('$order_number', {$_SESSION['user_id']}, $food_id, '{$food['name']}', $quantity, {$food['price']}, $delivery_fee, $total, '$delivery_method', '$payment_method', '$notes', 'pending')"; 
+        $insert_query = "INSERT INTO orders (order_number, user_id, food_id, food_name, quantity, price_per_item, total_amount, payment_method, notes, status) 
+                VALUES ('$order_number', {$_SESSION['user_id']}, $food_id, '{$food['name']}', $quantity, {$food['price']}, $total, '$payment_method', '$notes', 'pending')"; 
         
         if(mysqli_query($konek, $insert_query)) {
             // Get the inserted order ID
@@ -83,10 +83,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['confirm_order'])) {
                 'quantity' => $quantity,
                 'price_per_item' => $food['price'],
                 'total' => $total,
-                'delivery_method' => $delivery_method,
                 'payment_method' => $payment_method,
-                'notes' => $notes,
-                'delivery_fee' => $delivery_fee
+                'notes' => $notes
             ];
             
             header("Location: order_success.php");
