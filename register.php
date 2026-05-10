@@ -475,8 +475,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="terms-group">
                 <label>
                     <input type="checkbox" name="terms" required>
-                    <span>I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></span>
-                </label>
+                    <span>Saya setuju dengan <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a></span>
             </div>
             
             <button type="submit" class="btn-submit">
@@ -489,29 +488,5 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <?php endif; ?>
     </div>
-    
-    <div class="info-side">
-        <div class="info-content">
-            <div class="logo">
-                <i class="fas fa-heart"></i> Jogja Foodies
-            </div>
-            <h2>Welcome to <br>Jogja Foodies!</h2>
-            <p>Discover the authentic taste of Yogyakarta through our curated culinary platform. Join thousands of foodies exploring the best culinary spots in Jogja.</p>
-            
-            <ul class="features-list">
-                <li><i class="fas fa-heart"></i> Discover hidden culinary gems</li>
-                <li><i class="fas fa-heart"></i> Share your food experiences</li>
-                <li><i class="fas fa-heart"></i> Get exclusive discounts</li>
-                <li><i class="fas fa-heart"></i> Join foodie community</li>
-            </ul>
-            
-            <div class="testimonial">
-                <p>"Jogja Foodies helped me find the best Gudeg in town! The community is amazing and the recommendations are spot on."</p>
-                <div class="author">— Budi Santoso, Food Enthusiast</div>
-            </div>
-        </div>
-    </div>
-</div>
-
 </body>
 </html>

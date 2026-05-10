@@ -1,19 +1,25 @@
 <?php
 // file: my_orders.php
+// ============================================
+// HALAMAN RIWAYAT PESANAN USER - TANPA KODE ORDER & STATUS
+// ============================================
+
 session_start();
 require_once 'config/koneksi.php';
 
-// Check if user is logged in
+// ========== CEK LOGIN ==========
 if(!isset($_SESSION['user_id'])) {
     header("Location: login.php");
-    exit();
+    exit(); 
 }
 
 $user_id = $_SESSION['user_id'];
 
-// ==============================================
-// QUERY JOIN menggunakan MySQLi
-// ==============================================
+// ========== CEK KOLOM created_at ==========
+$check_column = mysqli_query($konek, "SHOW COLUMNS FROM orders LIKE 'created_at'");
+$has_created_at = mysqli_num_rows($check_column) > 0;
+
+// ========== AMBIL DATA PESANAN ==========
 $query = "SELECT o.*, f.name as food_name 
           FROM orders o
           LEFT JOIN foods f ON o.food_id = f.id
@@ -22,20 +28,12 @@ $query = "SELECT o.*, f.name as food_name
 
 $result = mysqli_query($konek, $query);
 $orders = [];
+
 while ($row = mysqli_fetch_assoc($result)) {
     $orders[] = $row;
 }
 
-// Status badge color mapping
-$status_colors = [
-    'pending' => 'warning',
-    'confirmed' => 'info',
-    'processing' => 'primary',
-    'completed' => 'success',
-    'cancelled' => 'danger'
-];
-
-// Fungsi gambar
+// ========== FUNGSI AMBIL GAMBAR ==========
 function getFoodImageFromName($food_name) {
     $clean_name = strtolower(str_replace(' ', '', $food_name));
     
@@ -44,6 +42,9 @@ function getFoodImageFromName($food_name) {
     if(strpos($clean_name, 'cendol') !== false) return 'assets/cendol.jpeg';
     if(strpos($clean_name, 'thiwul') !== false) return 'assets/thiwul.jpeg';
     if(strpos($clean_name, 'wedang') !== false) return 'assets/wedang.jpeg';
+    if(strpos($clean_name, 'sate') !== false) return 'assets/sate.jpg';
+    if(strpos($clean_name, 'ayam') !== false) return 'assets/ayam.jpeg';
+    if(strpos($clean_name, 'ronde') !== false) return 'assets/ronde.jpeg';
     
     return 'assets/gudeg.jpeg';
 }
@@ -58,6 +59,7 @@ function getFoodImageFromName($food_name) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         * {
             margin: 0;
@@ -67,107 +69,136 @@ function getFoodImageFromName($food_name) {
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #f8f9fa;
-            color: #2d3436;
+            background: #FFF5F7;
+            color: #4A4A4A;
+        }
+
+        :root {
+            --pastel-pink: #FFB7C5;
+            --pastel-pink-dark: #F5A3B0;
+            --pastel-mauve: #E8D1E0;
+            --pastel-blush: #FFD1DC;
+            --pastel-rose: #F7CAC9;
+            --text-soft: #5A5A6E;
+            --white-soft: #FFF9FB;
         }
 
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 1rem 0;
+            background: #FFFFFF;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+            padding: 0.8rem 0;
         }
 
         .navbar-brand {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
-            color: #FF6B35 !important;
+            color: #F5A3B0 !important;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .navbar-brand i {
-            color: #FF6B35;
+        .navbar-brand img {
+            height: 45px;
+            width: auto;
+            border-radius: 12px;
+            object-fit: cover;
         }
 
         .nav-link {
-            color: #2d3436 !important;
+            color: #5A5A6E !important;
             font-weight: 500;
-            margin: 0 0.5rem;
+            margin: 0 1rem;
             transition: all 0.3s;
         }
 
         .nav-link:hover {
-            color: #FF6B35 !important;
+            color: #F5A3B0 !important;
         }
 
-        .profile-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+        .nav-link.active-red {
+            color: #F5A3B0 !important;
             font-weight: 600;
+            position: relative;
         }
 
-        .dropdown-profile {
+        .nav-link.active-red::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #F5A3B0;
+            border-radius: 3px;
+        }
+
+        .btn-primary-custom {
+            background: #F5A3B0;
+            border: none;
+            padding: 0.5rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .btn-primary-custom:hover {
+            background: #E8919F;
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .btn-order-again {
             background: transparent;
-            border: none;
-            padding: 0;
+            border: 2px solid #F5A3B0;
+            border-radius: 50px;
+            padding: 0.4rem 1rem;
+            color: #F5A3B0;
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
         }
 
-        .dropdown-menu-custom {
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: none;
+        .btn-order-again:hover {
+            background: #F5A3B0;
+            color: white;
         }
 
         .page-header {
-            background: linear-gradient(135deg, #FF6B35, #FF8C42);
-            padding: 60px 0;
-            color: white;
+            background: #FFD1DC;
+            padding: 80px 0 60px;
+            color: #6B4E5E;
             text-align: center;
         }
 
         .page-header h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 800;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: #6B4E5E;
+        }
+
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            color: #7A5C68;
         }
 
         .order-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
             transition: all 0.3s;
             margin-bottom: 1.5rem;
+            border: 1px solid #FFE2E8;
         }
 
         .order-card:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-
-        .order-header {
-            background: #f8f9fa;
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .order-number {
-            font-family: monospace;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-
-        .order-date {
-            font-size: 0.8rem;
-            color: #636e72;
+            box-shadow: 0 10px 30px rgba(245,163,176,0.15);
         }
 
         .order-body {
@@ -191,6 +222,7 @@ function getFoodImageFromName($food_name) {
         .order-details h5 {
             font-weight: 700;
             margin-bottom: 0.5rem;
+            color: #6B4E5E;
         }
 
         .order-meta {
@@ -202,99 +234,96 @@ function getFoodImageFromName($food_name) {
 
         .order-meta span {
             font-size: 0.8rem;
-            color: #636e72;
+            color: #A58E98;
         }
 
         .order-total {
             font-weight: 700;
-            color: #FF6B35;
+            color: #F5A3B0;
             font-size: 1.2rem;
-        }
-
-        .status-badge {
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .status-pending { background: #ffc107; color: #000; }
-        .status-confirmed { background: #17a2b8; color: #fff; }
-        .status-processing { background: #007bff; color: #fff; }
-        .status-completed { background: #28a745; color: #fff; }
-        .status-cancelled { background: #dc3545; color: #fff; }
-
-        .btn-order-again {
-            background: transparent;
-            border: 2px solid #FF6B35;
-            border-radius: 50px;
-            padding: 0.3rem 1rem;
-            color: #FF6B35;
-            font-size: 0.8rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-
-        .btn-order-again:hover {
-            background: #FF6B35;
-            color: white;
-        }
-
-        .btn-primary-custom {
-            background: #FF6B35;
-            border: none;
-            padding: 0.5rem 1.8rem;
-            border-radius: 50px;
-            font-weight: 600;
-            color: white;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-primary-custom:hover {
-            background: #e55a2b;
-            color: white;
         }
 
         .empty-state {
             text-align: center;
             padding: 4rem;
-            background: white;
+            background: #FFF9FB;
             border-radius: 20px;
+            border: 1px solid #FFE2E8;
         }
 
         .empty-state i {
             font-size: 4rem;
-            color: #ddd;
+            color: #FFD1DC;
             margin-bottom: 1rem;
         }
 
+        .empty-state h4 {
+            color: #6B4E5E;
+        }
+
         footer {
-            background: #1e272e;
-            color: #d2dae2;
-            padding: 3rem 0 2rem;
-            margin-top: 3rem;
+            background: #F8E9EE;
+            color: #7A5C68;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+            border-top: 1px solid #FFE2E8;
+        }
+
+        .footer-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #F5A3B0;
+            margin-bottom: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand img {
+            height: 40px;
+            width: auto;
+            border-radius: 10px;
+        }
+
+        footer h6 {
+            color: #6B4E5E;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
         }
 
         footer a {
-            color: #d2dae2;
+            color: #8A6F7A;
             text-decoration: none;
         }
 
         footer a:hover {
-            color: #FF6B35;
+            color: #F5A3B0;
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .order-body {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .order-image {
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- ========== NAVBAR ========== -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
     <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="index.php">
-            <i class="fas fa-utensils fs-3 me-2" style="color: #FF6B35;"></i>
-            <span class="fw-bold fs-4" style="color: #FF6B35;">Jogja Foodies</span>
+            <img src="assets/logo.jpeg" alt="Jogja Foodies Logo">
+            <span class="fw-bold fs-4" style="color: #F5A3B0;">Jogja Foodies</span>
         </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -304,7 +333,7 @@ function getFoodImageFromName($food_name) {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link fw-bold <?= ($current_page == 'index.php') ? 'active-red' : '' ?>" href="index.php">Home</a>
+                    <a class="nav-link fw-bold" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link fw-bold" href="menu.php">Menu</a>
@@ -313,65 +342,74 @@ function getFoodImageFromName($food_name) {
         </div>
         
         <div class="d-flex align-items-center" style="gap: 10px;">
-            <i class="bi bi-search fs-5 cursor-pointer" style="cursor: pointer; color: #FF6B35;"></i>
-            
             <?php if(isset($_SESSION['user_id'])): ?>
                 <div class="dropdown d-inline-block">
-                    <button class="btn rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" style="background: #FF6B35; color: white; border: none;">
-                        <i class="fas fa-user-circle"></i> <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username']) ?>
+                    <button class="btn rounded-pill px-3 dropdown-toggle" type="button" data-bs-toggle="dropdown" 
+                            style="background: #F5A3B0; color: white; border: none;">
+                        <i class="fas fa-user-circle"></i> 
+                        <?= htmlspecialchars($_SESSION['full_name'] ?? $_SESSION['username']) ?>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="my_orders.php"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                        <li><a class="dropdown-item active-red" href="my_orders.php">My Orders</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                        <li><a class="dropdown-item text-danger" href="logout.php">Logout</a></li>
                     </ul>
                 </div>
             <?php else: ?>
-                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #FF6B35; color: white;">Masuk</a>
-                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #FF6B35; color: #FF6B35;">Daftar</a>
+                <a href="login.php" class="btn rounded-pill px-3 me-2 fw-bold" style="background: #F5A3B0; color: white; border: none;">Masuk</a>
+                <a href="register.php" class="btn rounded-pill px-3 fw-bold" style="border: 2px solid #F5A3B0; color: #F5A3B0;">Daftar</a>
             <?php endif; ?>
         </div>
     </div>
 </nav>
-<!-- Page Header -->
+
+<!-- ========== PAGE HEADER ========== -->
 <section class="page-header">
     <div class="container">
-        <h1><i class="fas fa-receipt"></i> My Orders</h1>
+        <h1>My Orders</h1>
         <p>Riwayat pemesanan makanan Anda</p>
     </div>
 </section>
 
-<!-- Orders List -->
+<!-- ========== LIST ORDER ========== -->
 <section class="container my-5">
+    
     <?php if(count($orders) > 0): ?>
+        
         <?php foreach($orders as $order): ?>
         <div class="order-card">
-            <div class="order-header">
-                <div>
-                    <span class="order-number">#<?php echo htmlspecialchars($order['order_number']); ?></span>
-                    <span class="order-date ms-3">
-                        <i class="fas fa-calendar-alt"></i> <?php echo date('d M Y, H:i', strtotime($order['created_at'] ?? $order['order_date'] ?? 'now')); ?>
-                    </span>
-                </div>
-                <div>
-                    <span class="status-badge status-<?php echo $order['status']; ?>">
-                        <?php echo ucfirst($order['status']); ?>
-                    </span>
-                </div>
-            </div>
             <div class="order-body">
-                <img src="<?php echo getFoodImageFromName($order['food_name']); ?>" alt="<?php echo htmlspecialchars($order['food_name']); ?>" class="order-image">
+                <!-- GAMBAR MAKANAN -->
+                <img src="<?php echo getFoodImageFromName($order['food_name']); ?>" 
+                     alt="<?php echo htmlspecialchars($order['food_name']); ?>" 
+                     class="order-image">
+                
+                <!-- DETAIL MAKANAN (TANPA NOMOR ORDER & STATUS) -->
                 <div class="order-details">
+                    <!-- NAMA MAKANAN + TANGGAL -->
                     <h5><?php echo htmlspecialchars($order['food_name']); ?></h5>
                     <div class="order-meta">
-                        <span><i class="fas fa-box"></i> Quantity: <?php echo $order['quantity']; ?>x</span>
-                        <span><i class="fas fa-truck"></i> <?php echo ucfirst($order['delivery_method']); ?></span>
+                        <span><i class="fas fa-calendar-alt"></i> 
+                            <?php 
+                                if($has_created_at && isset($order['created_at']) && !empty($order['created_at'])) {
+                                    echo date('d M Y, H:i', strtotime($order['created_at']));
+                                } elseif(isset($order['order_date']) && !empty($order['order_date'])) {
+                                    echo date('d M Y, H:i', strtotime($order['order_date']));
+                                } else {
+                                    echo date('d M Y, H:i');
+                                }
+                            ?>
+                        </span>
+                        <span><i class="fas fa-box"></i> Jumlah: <?php echo $order['quantity']; ?>x</span>
+                        <span><i class="fas fa-truck"></i> <?php echo $order['delivery_method'] == 'pickup' ? 'Ambil Sendiri' : 'Diantar'; ?></span>
                         <span><i class="fas fa-credit-card"></i> <?php echo strtoupper($order['payment_method']); ?></span>
                     </div>
                     <?php if(!empty($order['notes'])): ?>
                         <p class="text-muted small mt-2"><i class="fas fa-pen"></i> Catatan: <?php echo htmlspecialchars($order['notes']); ?></p>
                     <?php endif; ?>
                 </div>
+                
+                <!-- TOTAL HARGA & TOMBOL PESAN LAGI -->
                 <div class="text-end">
                     <div class="order-total mb-2">Rp <?php echo number_format($order['total_amount'], 0, ',', '.'); ?></div>
                     <a href="order.php?id=<?php echo $order['food_id']; ?>" class="btn-order-again">
@@ -381,30 +419,49 @@ function getFoodImageFromName($food_name) {
             </div>
         </div>
         <?php endforeach; ?>
+        
     <?php else: ?>
+        
         <div class="empty-state">
             <i class="fas fa-receipt"></i>
             <h4 class="mt-3">Belum ada pesanan</h4>
             <p class="text-muted">Yuk, pesan makanan favorit Anda sekarang!</p>
             <a href="menu.php" class="btn btn-primary-custom mt-3">Mulai Pesan</a>
         </div>
+        
     <?php endif; ?>
 </section>
 
-<!-- Footer -->
+<!-- ========== FOOTER ========== -->
 <footer>
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="footer-brand">
-                    <i class="fas fa-utensils"></i> Jogja Foodies
+                    <img src="assets/logo.jpeg" alt="Jogja Foodies Logo">
+                    Jogja Foodies
                 </div>
-                <p>Discover the authentic taste of Yogyakarta.</p>
+                <p>Temukan makanan favoritmu!</p>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h6>Contact Info</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-map-marker-alt"></i> Yogyakarta, Indonesia</li>
+                    <li><i class="fas fa-envelope"></i> jogjafoodies@gmail.com</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h6>Jam Operasional</h6>
+                <ul class="list-unstyled">
+                    <li>Senin - Jumat: 09:00 - 21:00</li>
+                    <li>Sabtu - Minggu: 08:00 - 22:00</li>
+                </ul>
             </div>
         </div>
-        <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+        <hr class="my-4" style="border-color: rgba(245,163,176,0.2);">
         <div class="text-center">
-            <p>&copy; 2024 Jogja Foodies. All rights reserved.</p>
+            <p class="mb-0">&copy; 2026 Jogja Foodies</p>
         </div>
     </div>
 </footer>
